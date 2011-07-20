@@ -28,6 +28,9 @@
 		<javac srcdir="${src}" destdir="${build}">
 			<classpath refid="pdi_classpath" />
 		</javac>
+		<copy todir="${build}">
+			<fileset dir="${src}" includes="**/*.properties" />
+		</copy>
 	</target>
 
 	<target name="dist" depends="compile">
@@ -35,12 +38,12 @@
 		<copy todir="${dist}/${plugin_name}">
 			<fileset dir="plugins/${plugin_name}" />
 		</copy>
-		<jar jarfile="${dist}/${plugin_name}/${plugin_jar}" basedir="${build}"/>
+		<jar jarfile="${dist}/${plugin_name}/${plugin_jar}" basedir="${build}" />
 	</target>
 
 	<target name="clean">
 		<delete dir="${build}" />
 		<delete dir="${dist}" />
 	</target>
-	
+
 </project>

@@ -48,9 +48,9 @@ public class AdvancedHTTPDialog extends BaseStepDialog implements StepDialogInte
 	private TextVar      wUrl;
 	private FormData     fdlUrl, fdUrl;
 
-	private Label        wlResult;
-	private Text         wResult;
-	private FormData     fdlResult, fdResult;
+	private Label        wlHttpBodyFieldName;
+	private Text         wHttpBodyFieldName;
+	private FormData     fdlHttpBodyFieldName, fdHttpBodyFieldName;
 
 	private Label        wlFields;
 	private TableView    wFields;
@@ -104,14 +104,14 @@ public class AdvancedHTTPDialog extends BaseStepDialog implements StepDialogInte
 		formLayout.marginHeight = Const.FORM_MARGIN;
 
 		shell.setLayout(formLayout);
-		shell.setText(Messages.getString("HTTPDialog.Shell.Title")); //$NON-NLS-1$
+		shell.setText(Messages.getString("AdvancedHTTPDialog.Shell.Title")); //$NON-NLS-1$
 		
 		int middle = props.getMiddlePct();
 		int margin=Const.MARGIN;
 
 		// Stepname line
 		wlStepname=new Label(shell, SWT.RIGHT);
-		wlStepname.setText(Messages.getString("HTTPDialog.Stepname.Label")); //$NON-NLS-1$
+		wlStepname.setText(Messages.getString("AdvancedHTTPDialog.Stepname.Label")); //$NON-NLS-1$
  		props.setLook(wlStepname);
 		fdlStepname=new FormData();
 		fdlStepname.left = new FormAttachment(0, 0);
@@ -129,7 +129,7 @@ public class AdvancedHTTPDialog extends BaseStepDialog implements StepDialogInte
 		wStepname.setLayoutData(fdStepname);
 		
 		wlUrl=new Label(shell, SWT.RIGHT);
-		wlUrl.setText(Messages.getString("HTTPDialog.URL.Label")); //$NON-NLS-1$
+		wlUrl.setText(Messages.getString("AdvancedHTTPDialog.URL.Label")); //$NON-NLS-1$
  		props.setLook(wlUrl);
 		fdlUrl=new FormData();
 		fdlUrl.left = new FormAttachment(0, 0);
@@ -148,7 +148,7 @@ public class AdvancedHTTPDialog extends BaseStepDialog implements StepDialogInte
 		
 		// UrlInField line
         wlUrlInField=new Label(shell, SWT.RIGHT);
-        wlUrlInField.setText(Messages.getString("HTTPDialog.UrlInField.Label"));
+        wlUrlInField.setText(Messages.getString("AdvancedHTTPDialog.UrlInField.Label"));
         props.setLook(wlUrlInField);
         fdlUrlInField=new FormData();
         fdlUrlInField.left = new FormAttachment(0, 0);
@@ -174,7 +174,7 @@ public class AdvancedHTTPDialog extends BaseStepDialog implements StepDialogInte
 
 		// UrlField Line
 		wlUrlField=new Label(shell, SWT.RIGHT);
-		wlUrlField.setText(Messages.getString("HTTPDialog.UrlField.Label")); //$NON-NLS-1$
+		wlUrlField.setText(Messages.getString("AdvancedHTTPDialog.UrlField.Label")); //$NON-NLS-1$
  		props.setLook(wlUrlField);
 		fdlUrlField=new FormData();
 		fdlUrlField.left = new FormAttachment(0, 0);
@@ -183,7 +183,7 @@ public class AdvancedHTTPDialog extends BaseStepDialog implements StepDialogInte
 		wlUrlField.setLayoutData(fdlUrlField);
 
     	wUrlField=new ComboVar(transMeta, shell, SWT.SINGLE | SWT.LEFT | SWT.BORDER);
-    	wUrlField.setToolTipText(Messages.getString("HTTPDialog.UrlField.Tooltip"));
+    	wUrlField.setToolTipText(Messages.getString("AdvancedHTTPDialog.UrlField.Tooltip"));
 		props.setLook(wUrlField);
 		wUrlField.addModifyListener(lsMod);
 		fdUrlField=new FormData();
@@ -209,37 +209,37 @@ public class AdvancedHTTPDialog extends BaseStepDialog implements StepDialogInte
      );        
 		
 		
-		// Result line...
-		wlResult=new Label(shell, SWT.RIGHT);
-		wlResult.setText(Messages.getString("HTTPDialog.Result.Label")); //$NON-NLS-1$
- 		props.setLook(wlResult);
-		fdlResult=new FormData();
-		fdlResult.left = new FormAttachment(0, 0);
-		fdlResult.right= new FormAttachment(middle, -margin);
-		fdlResult.top  = new FormAttachment(wUrlField, margin*2);
-		wlResult.setLayoutData(fdlResult);
-		wResult=new Text(shell, SWT.SINGLE | SWT.LEFT | SWT.BORDER);
- 		props.setLook(wResult);
-		wResult.addModifyListener(lsMod);
-		fdResult=new FormData();
-		fdResult.left = new FormAttachment(middle, 0);
-		fdResult.top  = new FormAttachment(wUrlField, margin*2);
-		fdResult.right= new FormAttachment(100, 0);
-		wResult.setLayoutData(fdResult);
+		// HttpBodyFieldName line...
+		wlHttpBodyFieldName=new Label(shell, SWT.RIGHT);
+		wlHttpBodyFieldName.setText(Messages.getString("AdvancedHTTPDialog.HttpBodyFieldName.Label")); //$NON-NLS-1$
+ 		props.setLook(wlHttpBodyFieldName);
+		fdlHttpBodyFieldName=new FormData();
+		fdlHttpBodyFieldName.left = new FormAttachment(0, 0);
+		fdlHttpBodyFieldName.right= new FormAttachment(middle, -margin);
+		fdlHttpBodyFieldName.top  = new FormAttachment(wUrlField, margin*2);
+		wlHttpBodyFieldName.setLayoutData(fdlHttpBodyFieldName);
+		wHttpBodyFieldName=new Text(shell, SWT.SINGLE | SWT.LEFT | SWT.BORDER);
+ 		props.setLook(wHttpBodyFieldName);
+		wHttpBodyFieldName.addModifyListener(lsMod);
+		fdHttpBodyFieldName=new FormData();
+		fdHttpBodyFieldName.left = new FormAttachment(middle, 0);
+		fdHttpBodyFieldName.top  = new FormAttachment(wUrlField, margin*2);
+		fdHttpBodyFieldName.right= new FormAttachment(100, 0);
+		wHttpBodyFieldName.setLayoutData(fdHttpBodyFieldName);
 
 		wlFields=new Label(shell, SWT.NONE);
-		wlFields.setText(Messages.getString("HTTPDialog.Parameters.Label")); //$NON-NLS-1$
+		wlFields.setText(Messages.getString("AdvancedHTTPDialog.Parameters.Label")); //$NON-NLS-1$
  		props.setLook(wlFields);
 		fdlFields=new FormData();
 		fdlFields.left = new FormAttachment(0, 0);
-		fdlFields.top  = new FormAttachment(wResult, margin);
+		fdlFields.top  = new FormAttachment(wHttpBodyFieldName, margin);
 		wlFields.setLayoutData(fdlFields);
 		
 		final int FieldsRows=input.getArgumentField().length;
 		
 		 colinf=new ColumnInfo[] { 
-		  new ColumnInfo(Messages.getString("HTTPDialog.ColumnInfo.Name"),      ColumnInfo.COLUMN_TYPE_CCOMBO, new String[] { "" }, false),
-		  new ColumnInfo(Messages.getString("HTTPDialog.ColumnInfo.Parameter"),  ColumnInfo.COLUMN_TYPE_TEXT,   false), //$NON-NLS-1$
+		  new ColumnInfo(Messages.getString("AdvancedHTTPDialog.ColumnInfo.Name"),      ColumnInfo.COLUMN_TYPE_CCOMBO, new String[] { "" }, false),
+		  new ColumnInfo(Messages.getString("AdvancedHTTPDialog.ColumnInfo.Parameter"),  ColumnInfo.COLUMN_TYPE_TEXT,   false), //$NON-NLS-1$
         };
 		
 		wFields=new TableView(transMeta, shell, 
@@ -291,7 +291,7 @@ public class AdvancedHTTPDialog extends BaseStepDialog implements StepDialogInte
 		wOK=new Button(shell, SWT.PUSH);
 		wOK.setText(Messages.getString("System.Button.OK")); //$NON-NLS-1$
 		wGet=new Button(shell, SWT.PUSH);
-		wGet.setText(Messages.getString("HTTPDialog.GetFields.Button")); //$NON-NLS-1$
+		wGet.setText(Messages.getString("AdvancedHTTPDialog.GetFields.Button")); //$NON-NLS-1$
 		wCancel=new Button(shell, SWT.PUSH);
 		wCancel.setText(Messages.getString("System.Button.Cancel")); //$NON-NLS-1$
 
@@ -310,7 +310,7 @@ public class AdvancedHTTPDialog extends BaseStepDialog implements StepDialogInte
 		
 		wStepname.addSelectionListener( lsDef );
         wUrl.addSelectionListener( lsDef );
-        wResult.addSelectionListener( lsDef );
+        wHttpBodyFieldName.addSelectionListener( lsDef );
 		
 		// Detect X or ALT-F4 or something that kills this window...
 		shell.addShellListener(	new ShellAdapter() { public void shellClosed(ShellEvent e) { cancel(); } } );
@@ -371,7 +371,7 @@ public class AdvancedHTTPDialog extends BaseStepDialog implements StepDialogInte
 	public void getData()
 	{
 		int i;
-		log.logDebug(toString(), Messages.getString("HTTPDialog.Log.GettingKeyInfo")); //$NON-NLS-1$
+		log.logDebug(toString(), Messages.getString("AdvancedHTTPDialog.Log.GettingKeyInfo")); //$NON-NLS-1$
 		
 		if (input.getArgumentField()!=null)
 		for (i=0;i<input.getArgumentField().length;i++)
@@ -385,7 +385,7 @@ public class AdvancedHTTPDialog extends BaseStepDialog implements StepDialogInte
         wUrlInField.setSelection(input.isUrlInField());
         if (input.getUrlField() !=null) wUrlField.setText(input.getUrlField());
         
-		if (input.getFieldName()!=null) wResult.setText(input.getFieldName());
+		if (input.getHttpBodyFieldName()!=null) wHttpBodyFieldName.setText(input.getHttpBodyFieldName());
 
 		wFields.setRowNums();
 		wFields.optWidth(true);
@@ -407,7 +407,7 @@ public class AdvancedHTTPDialog extends BaseStepDialog implements StepDialogInte
 
 		input.allocate(nrargs);
 
-		log.logDebug(toString(), Messages.getString("HTTPDialog.Log.FoundArguments",String.valueOf(nrargs))); //$NON-NLS-1$ //$NON-NLS-2$
+		log.logDebug(toString(), Messages.getString("AdvancedHTTPDialog.Log.FoundArguments",String.valueOf(nrargs))); //$NON-NLS-1$ //$NON-NLS-2$
 		for (int i=0;i<nrargs;i++)
 		{
 			TableItem item = wFields.getNonEmpty(i);
@@ -418,7 +418,7 @@ public class AdvancedHTTPDialog extends BaseStepDialog implements StepDialogInte
 		input.setUrl( wUrl.getText() );
 		input.setUrlField(wUrlField.getText() );
 		input.setUrlInField(wUrlInField.getSelection() );
-		input.setFieldName( wResult.getText() );
+		input.setHttpBodyFieldName( wHttpBodyFieldName.getText() );
 
 		stepname = wStepname.getText(); // return value
 
@@ -437,7 +437,7 @@ public class AdvancedHTTPDialog extends BaseStepDialog implements StepDialogInte
 		}
 		catch(KettleException ke)
 		{
-			new ErrorDialog(shell, Messages.getString("HTTPDialog.FailedToGetFields.DialogTitle"), Messages.getString("HTTPDialog.FailedToGetFields.DialogMessage"), ke); //$NON-NLS-1$ //$NON-NLS-2$
+			new ErrorDialog(shell, Messages.getString("AdvancedHTTPDialog.FailedToGetFields.DialogTitle"), Messages.getString("AdvancedHTTPDialog.FailedToGetFields.DialogMessage"), ke); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 	}
 

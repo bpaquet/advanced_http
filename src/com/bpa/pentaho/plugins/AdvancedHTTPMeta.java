@@ -38,8 +38,8 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
     /** IN / OUT / INOUT */
     private String  argumentParameter[];
 
-    /** function result: new value name */
-    private String  fieldName;
+    /** function bodyFieldName: new value name */
+    private String  httpBodyFieldName;
     
     private boolean urlInField;
     
@@ -102,17 +102,17 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
     /**
      * @return Returns the resultName.
      */
-    public String getFieldName()
+    public String getHttpBodyFieldName()
     {
-        return fieldName;
+        return httpBodyFieldName;
     }
 
     /**
      * @param resultName The resultName to set.
      */
-    public void setFieldName(String resultName)
+    public void setHttpBodyFieldName(String httpBodyFieldName)
     {
-        this.fieldName = resultName;
+        this.httpBodyFieldName = httpBodyFieldName;
     }
     /**
      * @return Is the url coded in a field?
@@ -182,14 +182,14 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
             argumentParameter[i] = "arg"; //$NON-NLS-1$
         }
 
-        fieldName = "result"; //$NON-NLS-1$
+        httpBodyFieldName = "http_body"; //$NON-NLS-1$
     }
 
     public void getFields(RowMetaInterface inputRowMeta, String name, RowMetaInterface[] info, StepMeta nextStep, VariableSpace space) throws KettleStepException    
     {
-        if (!Const.isEmpty(fieldName))
+        if (!Const.isEmpty(httpBodyFieldName))
         {
-            ValueMetaInterface v = new ValueMeta(fieldName, ValueMeta.TYPE_STRING);
+            ValueMetaInterface v = new ValueMeta(httpBodyFieldName, ValueMeta.TYPE_STRING);
             inputRowMeta.addValueMeta(v);
         }
     }
@@ -213,9 +213,9 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
 
         retval.append("    </lookup>").append(Const.CR); //$NON-NLS-1$
 
-        retval.append("    <result>").append(Const.CR); //$NON-NLS-1$
-        retval.append("      ").append(XMLHandler.addTagValue("name", fieldName)); //$NON-NLS-1$ //$NON-NLS-2$
-        retval.append("    </result>").append(Const.CR); //$NON-NLS-1$
+        retval.append("    <http_body_field>").append(Const.CR); //$NON-NLS-1$
+        retval.append("      ").append(XMLHandler.addTagValue("name", httpBodyFieldName)); //$NON-NLS-1$ //$NON-NLS-2$
+        retval.append("    </http_body_field>").append(Const.CR); //$NON-NLS-1$
 
         return retval.toString();
     }
@@ -243,7 +243,7 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
                 argumentParameter[i] = XMLHandler.getTagValue(anode, "parameter"); //$NON-NLS-1$
             }
 
-            fieldName = XMLHandler.getTagValue(stepnode, "result", "name"); // Optional, can be null //$NON-NLS-1$
+            httpBodyFieldName = XMLHandler.getTagValue(stepnode, "http_body_field", "name"); // Optional, can be null //$NON-NLS-1$
         }
         catch (Exception e)
         {
@@ -268,7 +268,7 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
                 argumentParameter[i] = rep.getStepAttributeString(id_step, i, "arg_parameter"); //$NON-NLS-1$
             }
 
-            fieldName = rep.getStepAttributeString(id_step, "result_name"); //$NON-NLS-1$
+            httpBodyFieldName = rep.getStepAttributeString(id_step, "http_body_field_name"); //$NON-NLS-1$
         }
         catch (Exception e)
         {
@@ -290,7 +290,7 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
                 rep.saveStepAttribute(id_transformation, id_step, i, "arg_parameter", argumentParameter[i]); //$NON-NLS-1$
             }
 
-            rep.saveStepAttribute(id_transformation, id_step, "result_name", fieldName); //$NON-NLS-1$
+            rep.saveStepAttribute(id_transformation, id_step, "http_body_field_name", httpBodyFieldName); //$NON-NLS-1$
         }
         catch (Exception e)
         {
