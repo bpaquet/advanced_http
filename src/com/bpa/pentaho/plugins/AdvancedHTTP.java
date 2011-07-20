@@ -12,6 +12,7 @@ import org.pentaho.di.core.exception.KettleStepException;
 import org.pentaho.di.core.exception.KettleValueException;
 import org.pentaho.di.core.row.RowDataUtil;
 import org.pentaho.di.core.row.RowMetaInterface;
+import org.pentaho.di.core.row.ValueMeta;
 import org.pentaho.di.trans.Trans;
 import org.pentaho.di.trans.TransMeta;
 import org.pentaho.di.trans.step.BaseStep;
@@ -120,9 +121,17 @@ public class AdvancedHTTP extends BaseStep implements StepInterface
 	
 	        	url.append(URIUtil.encodeWithinQuery(meta.getArgumentParameter()[i]));
 	        	url.append('=');
-	            String s = outputRowMeta.getString(row, data.argnrs[i]);
-	            if ( s != null )
-	            	s = URIUtil.encodeWithinQuery(s);
+	            String s = null;
+	            if (outputRowMeta.getValueMeta(data.argnrs[i]).getType() == ValueMeta.TYPE_STRING) {
+	            	s = outputRowMeta.getString(row, data.argnrs[i]);
+	            }
+	            else if (outputRowMeta.getValueMeta(data.argnrs[i]).getType() == ValueMeta.TYPE_INTEGER) {
+	            	s = outputRowMeta.getInteger(row, data.argnrs[i]).toString();
+	            }
+	            else {
+	            	 throw new KettleException(Messages.getString("AdvancedHTTP.Log.NotManagedParameterType", outputRowMeta.getValueMeta(data.argnrs[i]).toString()));
+	            }
+	            s = URIUtil.encodeWithinQuery(s);
 	            url.append(s);
 	        }
 	        
