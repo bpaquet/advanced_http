@@ -74,6 +74,10 @@ public class AdvancedHTTPDialog extends BaseStepDialog implements StepDialogInte
     private Button       wFailOnError;
     private FormData     fdlFailOnError, fdFailOnError;
 	
+    private Label        wlStrictSSLCheck;
+    private Button       wStrictSSLCheck;
+    private FormData     fdlStrictSSLCheck, fdStrictSSLCheck;
+	
 	private Label        wlUrlField;
 	private ComboVar     wUrlField;
 	private FormData     fdlUrlField, fdUrlField;
@@ -218,20 +222,45 @@ public class AdvancedHTTPDialog extends BaseStepDialog implements StepDialogInte
         }
     );
         
+		// Stric ssl check line
+        wlStrictSSLCheck=new Label(shell, SWT.RIGHT);
+        wlStrictSSLCheck.setText(Messages.getString("AdvancedHTTPDialog.StrictSSLCheck.Label"));
+        props.setLook(wlStrictSSLCheck);
+        fdlStrictSSLCheck=new FormData();
+        fdlStrictSSLCheck.left = new FormAttachment(0, 0);
+        fdlStrictSSLCheck.top  = new FormAttachment(wFailOnError, margin);
+        fdlStrictSSLCheck.right= new FormAttachment(middle, -margin);
+        wlStrictSSLCheck.setLayoutData(fdlStrictSSLCheck);
+        wStrictSSLCheck=new Button(shell, SWT.CHECK );
+        props.setLook(wStrictSSLCheck);
+        fdStrictSSLCheck=new FormData();
+        fdStrictSSLCheck.left = new FormAttachment(middle, 0);
+        fdStrictSSLCheck.top  = new FormAttachment(wFailOnError, margin);
+        fdStrictSSLCheck.right= new FormAttachment(100, 0);
+        wStrictSSLCheck.setLayoutData(fdStrictSSLCheck);
+        wStrictSSLCheck.addSelectionListener(new SelectionAdapter() 
+        {
+            public void widgetSelected(SelectionEvent e) 
+            {
+            	input.setChanged();
+            }
+        }
+    );
+        
 		// UrlInField line
         wlUrlInField=new Label(shell, SWT.RIGHT);
         wlUrlInField.setText(Messages.getString("AdvancedHTTPDialog.UrlInField.Label"));
         props.setLook(wlUrlInField);
         fdlUrlInField=new FormData();
         fdlUrlInField.left = new FormAttachment(0, 0);
-        fdlUrlInField.top  = new FormAttachment(wlFailOnError, margin);
+        fdlUrlInField.top  = new FormAttachment(wStrictSSLCheck, margin);
         fdlUrlInField.right= new FormAttachment(middle, -margin);
         wlUrlInField.setLayoutData(fdlUrlInField);
         wUrlInField=new Button(shell, SWT.CHECK );
         props.setLook(wUrlInField);
         fdUrlInField=new FormData();
         fdUrlInField.left = new FormAttachment(middle, 0);
-        fdUrlInField.top  = new FormAttachment(wlFailOnError, margin);
+        fdUrlInField.top  = new FormAttachment(wStrictSSLCheck, margin);
         fdUrlInField.right= new FormAttachment(100, 0);
         wUrlInField.setLayoutData(fdUrlInField);
         wUrlInField.addSelectionListener(new SelectionAdapter() 
@@ -547,11 +576,12 @@ public class AdvancedHTTPDialog extends BaseStepDialog implements StepDialogInte
         if (input.getUrlField() !=null) wUrlField.setText(input.getUrlField());
         
         wFailOnError.setSelection(input.isFailOnError());
+        wStrictSSLCheck.setSelection(input.isStrictSSLCheck());
         
         wHttpCallType.setText(input.getHttpCallType());
         wUseBasicAuth.setSelection(input.isUseBasicAuth());
-        wBasicAuthLogin.setText(input.getBasicAuthLogin());
-        wBasicAuthPassword.setText(input.getBasicAuthPassword());
+        if (input.getBasicAuthLogin() != null) wBasicAuthLogin.setText(input.getBasicAuthLogin());
+        if (input.getBasicAuthPassword() != null) wBasicAuthPassword.setText(input.getBasicAuthPassword());
         
 		if (input.getHttpBodyFieldName()!=null) wHttpBodyFieldName.setText(input.getHttpBodyFieldName());
 		if (input.getHttpReturnCodeFieldName()!=null) wHttpReturnCodeFieldName.setText(input.getHttpReturnCodeFieldName());
@@ -593,6 +623,7 @@ public class AdvancedHTTPDialog extends BaseStepDialog implements StepDialogInte
 		input.setUrlField(wUrlField.getText() );
 		input.setUrlInField(wUrlInField.getSelection() );
 		input.setFailOnError( wFailOnError.getSelection() );
+		input.setStrictSSLCheck( wStrictSSLCheck.getSelection() );
 		input.setHttpBodyFieldName( wHttpBodyFieldName.getText() );
 		input.setHttpReturnCodeFieldName( wHttpReturnCodeFieldName.getText() );
 		stepname = wStepname.getText(); // return value
