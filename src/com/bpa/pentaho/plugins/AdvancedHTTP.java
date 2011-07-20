@@ -42,8 +42,8 @@ public class AdvancedHTTP extends BaseStep implements StepInterface
 				data.argnrs[i]=rowMeta.indexOfValue(meta.getArgumentField()[i]);
 				if (data.argnrs[i]<0)
 				{
-					logError(Messages.getString("HTTP.Log.ErrorFindingField")+meta.getArgumentField()[i]+"]"); //$NON-NLS-1$ //$NON-NLS-2$
-					throw new KettleStepException(Messages.getString("HTTP.Exception.CouldnotFindField",meta.getArgumentField()[i])); //$NON-NLS-1$ //$NON-NLS-2$
+					logError(Messages.getString("AdvancedHTTP.Log.ErrorFindingField")+meta.getArgumentField()[i]+"]"); //$NON-NLS-1$ //$NON-NLS-2$
+					throw new KettleStepException(Messages.getString("AdvancedHTTP.Exception.CouldnotFindField",meta.getArgumentField()[i])); //$NON-NLS-1$ //$NON-NLS-2$
 				}
 			}
 		}
@@ -56,7 +56,7 @@ public class AdvancedHTTP extends BaseStep implements StepInterface
         String url = determineUrl(rowMeta, rowData);
         try
         {
-            if(log.isDetailed()) logDetailed(Messages.getString("HTTP.Log.Connecting",url));
+            if(log.isDetailed()) logDetailed(Messages.getString("AdvancedHTTP.Log.Connecting",url));
             
             // Prepare HTTP get
             // 
@@ -70,7 +70,7 @@ public class AdvancedHTTP extends BaseStep implements StepInterface
                 int result = httpclient.executeMethod(method);
                 
                 // The status code
-                if (log.isDebug()) log.logDebug(toString(), Messages.getString("HTTP.Log.ResponseStatusCode", ""+result));
+                if (log.isDebug()) log.logDebug(toString(), Messages.getString("AdvancedHTTP.Log.ResponseStatusCode", ""+result));
                 
                 // the response
                 InputStream inputStream = method.getResponseBodyAsStream();
@@ -92,7 +92,7 @@ public class AdvancedHTTP extends BaseStep implements StepInterface
         }
         catch(Exception e)
         {
-            throw new KettleException(Messages.getString("HTTP.Log.UnableGetResult",url), e);
+            throw new KettleException(Messages.getString("AdvancedHTTP.Log.UnableGetResult",url), e);
         }
     }
 
@@ -130,7 +130,7 @@ public class AdvancedHTTP extends BaseStep implements StepInterface
 	    }
 	    catch(Exception e)
 	    {
-	        throw new KettleException(Messages.getString("HTTP.Log.UnableCreateUrl"), e);
+	        throw new KettleException(Messages.getString("AdvancedHTTP.Log.UnableCreateUrl"), e);
 	    }
     }
 
@@ -158,8 +158,8 @@ public class AdvancedHTTP extends BaseStep implements StepInterface
 			{
 				if(Const.isEmpty(meta.getUrlField()))
 				{
-					logError(Messages.getString("HTTP.Log.NoField"));
-					throw new KettleException(Messages.getString("HTTP.Log.NoField"));
+					logError(Messages.getString("AdvancedHTTP.Log.NoField"));
+					throw new KettleException(Messages.getString("AdvancedHTTP.Log.NoField"));
 				}
 				
 				// cache the position of the field			
@@ -170,8 +170,8 @@ public class AdvancedHTTP extends BaseStep implements StepInterface
 					if (data.indexOfUrlField<0)
 					{
 						// The field is unreachable !
-						logError(Messages.getString("HTTP.Log.ErrorFindingField",realUrlfieldName)); 
-						throw new KettleException(Messages.getString("HTTP.Exception.ErrorFindingField",realUrlfieldName)); 
+						logError(Messages.getString("AdvancedHTTP.Log.ErrorFindingField",realUrlfieldName)); 
+						throw new KettleException(Messages.getString("AdvancedHTTP.Exception.ErrorFindingField",realUrlfieldName)); 
 					}
 				}
 			}else
@@ -187,7 +187,7 @@ public class AdvancedHTTP extends BaseStep implements StepInterface
 				
             if (checkFeedback(getLinesRead())) 
             {
-            	if(log.isDetailed()) logDetailed(Messages.getString("HTTP.LineNumber")+getLinesRead()); //$NON-NLS-1$
+            	if(log.isDetailed()) logDetailed(Messages.getString("AdvancedHTTP.LineNumber")+getLinesRead()); //$NON-NLS-1$
             }
 		}
 		catch(KettleException e)
@@ -199,7 +199,7 @@ public class AdvancedHTTP extends BaseStep implements StepInterface
 	        }
 			else
 			{
-				logError(Messages.getString("HTTP.ErrorInStepRunning")+e.getMessage()); //$NON-NLS-1$
+				logError(Messages.getString("AdvancedHTTP.ErrorInStepRunning")+e.getMessage()); //$NON-NLS-1$
 				setErrors(1);
 				stopAll();
 				setOutputDone();  // signal end to receiver(s)
