@@ -215,8 +215,9 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
         }
         if (!Const.isEmpty(httpReturnCodeFieldName))
         {
-            ValueMetaInterface v = new ValueMeta(httpReturnCodeFieldName, ValueMeta.TYPE_STRING);
-            //v.setLength(ValueMetaInterface.DEFAULT_INTEGER_LENGTH, 0);
+            ValueMetaInterface v = new ValueMeta(httpReturnCodeFieldName, ValueMeta.TYPE_INTEGER);
+            v.setLength(ValueMetaInterface.DEFAULT_INTEGER_LENGTH, 0);
+            v.setPrecision(0);
             inputRowMeta.addValueMeta(v);
         }
     }
