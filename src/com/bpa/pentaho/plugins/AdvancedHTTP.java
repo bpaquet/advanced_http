@@ -93,7 +93,12 @@ public class AdvancedHTTP extends BaseStep implements StepInterface
         }
         catch(Exception e)
         {
-            throw new KettleException(Messages.getString("AdvancedHTTP.Log.UnableGetResult",url), e);
+        	if (meta.isFailOnError()) {
+        		throw new KettleException(Messages.getString("AdvancedHTTP.Log.UnableGetResult",url), e);
+        	}
+        	else {
+        		return RowDataUtil.addValueData(RowDataUtil.addValueData(rowData, rowMeta.size(), e.getMessage()), rowMeta.size() + 1, new Long(-1));
+        	}
         }
     }
 

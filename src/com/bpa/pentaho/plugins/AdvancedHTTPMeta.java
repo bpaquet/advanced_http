@@ -44,6 +44,8 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
     /** function bodyFieldName: new value name */
     private String httpReturnCodeFieldName;
     
+    private boolean failOnError;
+    
     private boolean urlInField;
     
     private String urlField;
@@ -54,7 +56,7 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
         super(); // allocate BaseStepMeta
     }
 
-    /**
+	/**
      * @return Returns the argument.
      */
     public String[] getArgumentField()
@@ -135,6 +137,20 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
     }
     
     /**
+     * @return Returns fail on error
+     */
+    public boolean isFailOnError() {
+		return failOnError;
+	}
+
+    /**
+     * @param failOnError Fail on error
+     */
+    public void setFailOnError(boolean failOnError) {
+		this.failOnError = failOnError;
+	}
+
+    /**
      * @return Is the url coded in a field?
      */
 	public boolean isUrlInField() {
@@ -147,7 +163,8 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
 	public void setUrlInField(boolean urlInField) {
 		this.urlInField = urlInField;
 	}
-	/**
+	
+    /**
      * @return The field name that contains the url.
      */
 	public String getUrlField() {
@@ -204,6 +221,8 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
 
         httpBodyFieldName = "http_body"; //$NON-NLS-1$
         httpReturnCodeFieldName = "http_return_code"; //$NON-NLS-1$
+        
+        failOnError = true;
     }
 
     public void getFields(RowMetaInterface inputRowMeta, String name, RowMetaInterface[] info, StepMeta nextStep, VariableSpace space) throws KettleStepException    
@@ -228,6 +247,7 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
 
         retval.append("    ").append(XMLHandler.addTagValue("url", url)); //$NON-NLS-1$ //$NON-NLS-2$
         retval.append("    "+XMLHandler.addTagValue("urlInField",  urlInField));
+        retval.append("    "+XMLHandler.addTagValue("failOnError",  failOnError));
         retval.append("    "+XMLHandler.addTagValue("urlField",  urlField));
         retval.append("    <lookup>").append(Const.CR); //$NON-NLS-1$
 
@@ -259,6 +279,7 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
             int nrargs;
 
             url = XMLHandler.getTagValue(stepnode, "url"); //$NON-NLS-1$
+            failOnError ="Y".equalsIgnoreCase(XMLHandler.getTagValue(stepnode, "failOnError"));
             urlInField="Y".equalsIgnoreCase(XMLHandler.getTagValue(stepnode, "urlInField"));
             urlField       = XMLHandler.getTagValue(stepnode, "urlField");
 			
@@ -289,6 +310,7 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
         try
         {
             url = rep.getStepAttributeString(id_step, "url"); //$NON-NLS-1$
+            failOnError =      rep.getStepAttributeBoolean (id_step, "failOnError");
             urlInField =      rep.getStepAttributeBoolean (id_step, "urlInField");
             urlField	=	   rep.getStepAttributeString (id_step, "urlField");
 			
@@ -315,6 +337,7 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
         try
         {
             rep.saveStepAttribute(id_transformation, id_step, "url", url); //$NON-NLS-1$
+            rep.saveStepAttribute(id_transformation, id_step, "failOnError",   failOnError);
 			rep.saveStepAttribute(id_transformation, id_step, "urlInField",   urlInField);
 			rep.saveStepAttribute(id_transformation, id_step, "urlField",   urlField);
 			

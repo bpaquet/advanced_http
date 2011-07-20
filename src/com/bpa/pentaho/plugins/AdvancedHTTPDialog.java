@@ -64,6 +64,10 @@ public class AdvancedHTTPDialog extends BaseStepDialog implements StepDialogInte
     private Button       wUrlInField;
     private FormData     fdlUrlInField, fdUrlInField;
 	
+    private Label        wlFailOnError;
+    private Button       wFailOnError;
+    private FormData     fdlFailOnError, fdFailOnError;
+	
 	private Label        wlUrlField;
 	private ComboVar     wUrlField;
 	private FormData     fdlUrlField, fdUrlField;
@@ -150,20 +154,37 @@ public class AdvancedHTTPDialog extends BaseStepDialog implements StepDialogInte
 		fdUrl.right= new FormAttachment(100, 0);
 		wUrl.setLayoutData(fdUrl);
 		
+		// Fail on error line
+        wlFailOnError=new Label(shell, SWT.RIGHT);
+        wlFailOnError.setText(Messages.getString("AdvancedHTTPDialog.FailOnError.Label"));
+        props.setLook(wlFailOnError);
+        fdlFailOnError=new FormData();
+        fdlFailOnError.left = new FormAttachment(0, 0);
+        fdlFailOnError.top  = new FormAttachment(wUrl, margin);
+        fdlFailOnError.right= new FormAttachment(middle, -margin);
+        wlFailOnError.setLayoutData(fdlFailOnError);
+        wFailOnError=new Button(shell, SWT.CHECK );
+        props.setLook(wFailOnError);
+        fdFailOnError=new FormData();
+        fdFailOnError.left = new FormAttachment(middle, 0);
+        fdFailOnError.top  = new FormAttachment(wUrl, margin);
+        fdFailOnError.right= new FormAttachment(100, 0);
+        wFailOnError.setLayoutData(fdFailOnError);
+        
 		// UrlInField line
         wlUrlInField=new Label(shell, SWT.RIGHT);
         wlUrlInField.setText(Messages.getString("AdvancedHTTPDialog.UrlInField.Label"));
         props.setLook(wlUrlInField);
         fdlUrlInField=new FormData();
         fdlUrlInField.left = new FormAttachment(0, 0);
-        fdlUrlInField.top  = new FormAttachment(wUrl, margin);
+        fdlUrlInField.top  = new FormAttachment(wlFailOnError, margin);
         fdlUrlInField.right= new FormAttachment(middle, -margin);
         wlUrlInField.setLayoutData(fdlUrlInField);
         wUrlInField=new Button(shell, SWT.CHECK );
         props.setLook(wUrlInField);
         fdUrlInField=new FormData();
         fdUrlInField.left = new FormAttachment(middle, 0);
-        fdUrlInField.top  = new FormAttachment(wUrl, margin);
+        fdUrlInField.top  = new FormAttachment(wlFailOnError, margin);
         fdUrlInField.right= new FormAttachment(100, 0);
         wUrlInField.setLayoutData(fdUrlInField);
         wUrlInField.addSelectionListener(new SelectionAdapter() 
@@ -408,6 +429,8 @@ public class AdvancedHTTPDialog extends BaseStepDialog implements StepDialogInte
         wUrlInField.setSelection(input.isUrlInField());
         if (input.getUrlField() !=null) wUrlField.setText(input.getUrlField());
         
+        wFailOnError.setSelection(input.isFailOnError());
+        
 		if (input.getHttpBodyFieldName()!=null) wHttpBodyFieldName.setText(input.getHttpBodyFieldName());
 		if (input.getHttpReturnCodeFieldName()!=null) wHttpReturnCodeFieldName.setText(input.getHttpReturnCodeFieldName());
 
@@ -442,6 +465,7 @@ public class AdvancedHTTPDialog extends BaseStepDialog implements StepDialogInte
 		input.setUrl( wUrl.getText() );
 		input.setUrlField(wUrlField.getText() );
 		input.setUrlInField(wUrlInField.getSelection() );
+		input.setFailOnError( wFailOnError.getSelection() );
 		input.setHttpBodyFieldName( wHttpBodyFieldName.getText() );
 		input.setHttpReturnCodeFieldName( wHttpReturnCodeFieldName.getText() );
 		stepname = wStepname.getText(); // return value
