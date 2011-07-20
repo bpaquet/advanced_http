@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin
+   id="AdvancedHTTP"
+   iconfile="HTTP.png"
+   description="Advanced HTTP Plugin"
+   tooltip="Plugin for advanced http calls"
+   category="Lookup"
+   classname="com.bpa.pentaho.plugins.AdvancedHTTPMeta">
+   <libraries>
+    <library name="advanced_http.jar"/>
+    </libraries>
+    
+   <localized_category>
+     <category locale="en_US">Lookup</category>
+   </localized_category>
+   <localized_description>
+     <description locale="en_US">Advanced HTTP</description>
+   </localized_description>
+   <localized_tooltip>
+     <tooltip locale="en_US">Plugin for advanced http calls</tooltip>
+   </localized_tooltip>
+   
+</plugin>

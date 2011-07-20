@@ -1,0 +1,46 @@
+<project default="compile">
+	<property environment="env" />
+	<property name="pdi_home" location="${env.PDI_HOME}" />
+
+	<property name="plugin_name" value="AdvancedHttp" />
+	<property name="plugin_jar" value="advanced_http.jar" />
+
+	<property name="src" location="src" />
+	<property name="build" location="build" />
+	<property name="dist" location="dist" />
+
+	<path id="pdi_classpath">
+		<fileset dir="${pdi_home}/lib">
+			<include name="*.jar" />
+		</fileset>
+		<filelist>
+			<file name="${pdi_home}/libswt/osx/swt.jar" />
+			<file name="${pdi_home}/libext/commons/commons-httpclient-3.0.1.jar" />
+		</filelist>
+	</path>
+
+	<target name="init">
+		<mkdir dir="${build}" />
+		<echo message="Using PDI_HOME : ${pdi_home}" />
+	</target>
+
+	<target name="compile" depends="init">
+		<javac srcdir="${src}" destdir="${build}">
+			<classpath refid="pdi_classpath" />
+		</javac>
+	</target>
+
+	<target name="dist" depends="compile">
+		<mkdir dir="${dist}" />
+		<copy todir="${dist}/${plugin_name}">
+			<fileset dir="plugins/${plugin_name}" />
+		</copy>
+		<jar jarfile="${dist}/${plugin_name}/${plugin_jar}" basedir="${build}"/>
+	</target>
+
+	<target name="clean">
+		<delete dir="${build}" />
+		<delete dir="${dist}" />
+	</target>
+	
+</project>
