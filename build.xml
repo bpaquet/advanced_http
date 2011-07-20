@@ -25,7 +25,7 @@
 	</target>
 
 	<target name="compile" depends="init">
-		<javac srcdir="${src}" destdir="${build}">
+		<javac srcdir="${src}" destdir="${build}" debug="true">
 			<classpath refid="pdi_classpath" />
 		</javac>
 		<copy todir="${build}">
