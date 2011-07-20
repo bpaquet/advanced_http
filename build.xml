@@ -20,8 +20,10 @@
 	</path>
 
 	<target name="init">
-		<mkdir dir="${build}" />
+		<available file="${pdi_home}" property="pdi_home_ok"/>
+		<fail message="You have to set env variable PDI_HOME" unless="pdi_home_ok"/>
 		<echo message="Using PDI_HOME : ${pdi_home}" />
+		<mkdir dir="${build}" />
 	</target>
 
 	<target name="compile" depends="init">
@@ -41,6 +43,11 @@
 		<jar jarfile="${dist}/${plugin_name}/${plugin_jar}" basedir="${build}" />
 	</target>
 
+	<target name="release" depends="dist">
+		<fail message="You have to set version with -Dversion=" unless="version"/>
+		<zip zipfile="advanced_http.${version}.zip" basedir="${dist}"/>
+	</target>
+		
 	<target name="clean">
 		<delete dir="${build}" />
 		<delete dir="${dist}" />
