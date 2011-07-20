@@ -29,6 +29,9 @@ import org.w3c.dom.Node;
 
 public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
 {
+	public static String HTTP_CALL_TYPE_GET = "GET";
+	public static String HTTP_CALL_TYPE_POST_FORM = "POST x-www-form-urlencoded";
+		
     /** URL / service to be called */
     private String  url;
 
@@ -50,6 +53,13 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
     
     private String urlField;
     
+    private boolean useBasicAuth;
+    
+    private String basicAuthLogin;
+    
+    private String basicAuthPassword;
+    
+    private String httpCallType;
 
     public AdvancedHTTPMeta()
     {
@@ -177,7 +187,64 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
 	public void setUrlField(String urlField) {
 		this.urlField = urlField;
 	}
-    public void loadXML(Node stepnode, List<DatabaseMeta> databases, Map<String, Counter> counters) throws KettleXMLException
+	
+    /**
+	 * @return the useBasicAuth
+	 */
+	public boolean isUseBasicAuth() {
+		return useBasicAuth;
+	}
+
+	/**
+	 * @param useBasicAuth the useBasicAuth to set
+	 */
+	public void setUseBasicAuth(boolean useBasicAuth) {
+		this.useBasicAuth = useBasicAuth;
+	}
+
+	/**
+	 * @return the basicAuthLogin
+	 */
+	public String getBasicAuthLogin() {
+		return basicAuthLogin;
+	}
+
+	/**
+	 * @param basicAuthLogin the basicAuthLogin to set
+	 */
+	public void setBasicAuthLogin(String basicAuthLogin) {
+		this.basicAuthLogin = basicAuthLogin;
+	}
+
+	/**
+	 * @return the basicAuthPassword
+	 */
+	public String getBasicAuthPassword() {
+		return basicAuthPassword;
+	}
+
+	/**
+	 * @param basicAuthPassword the basicAuthPassword to set
+	 */
+	public void setBasicAuthPassword(String basicAuthPassword) {
+		this.basicAuthPassword = basicAuthPassword;
+	}
+
+	/**
+	 * @return the httpCallType
+	 */
+	public String getHttpCallType() {
+		return httpCallType;
+	}
+
+	/**
+	 * @param httpCallType the httpCallType to set
+	 */
+	public void setHttpCallType(String httpCallType) {
+		this.httpCallType = httpCallType;
+	}
+
+	public void loadXML(Node stepnode, List<DatabaseMeta> databases, Map<String, Counter> counters) throws KettleXMLException
     {
         readData(stepnode, databases);
     }
@@ -223,6 +290,12 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
         httpReturnCodeFieldName = "http_return_code"; //$NON-NLS-1$
         
         failOnError = true;
+        
+        useBasicAuth = false;
+        basicAuthLogin = "";
+        basicAuthPassword = "";
+        
+        httpCallType = HTTP_CALL_TYPE_GET;
     }
 
     public void getFields(RowMetaInterface inputRowMeta, String name, RowMetaInterface[] info, StepMeta nextStep, VariableSpace space) throws KettleStepException    
@@ -246,6 +319,10 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
         StringBuffer retval = new StringBuffer(300);
 
         retval.append("    ").append(XMLHandler.addTagValue("url", url)); //$NON-NLS-1$ //$NON-NLS-2$
+        retval.append("    "+XMLHandler.addTagValue("httpCallType",  httpCallType));
+        retval.append("    "+XMLHandler.addTagValue("useBasicAuth",  useBasicAuth));
+        retval.append("    "+XMLHandler.addTagValue("basicAuthLogin",  basicAuthLogin));
+        retval.append("    "+XMLHandler.addTagValue("basicAuthPassword",  basicAuthPassword));
         retval.append("    "+XMLHandler.addTagValue("urlInField",  urlInField));
         retval.append("    "+XMLHandler.addTagValue("failOnError",  failOnError));
         retval.append("    "+XMLHandler.addTagValue("urlField",  urlField));
@@ -279,6 +356,10 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
             int nrargs;
 
             url = XMLHandler.getTagValue(stepnode, "url"); //$NON-NLS-1$
+            httpCallType = XMLHandler.getTagValue(stepnode, "httpCallType");
+            useBasicAuth = "Y".equalsIgnoreCase(XMLHandler.getTagValue(stepnode, "useBasicAuth"));
+            basicAuthLogin = XMLHandler.getTagValue(stepnode, "basicAuthLogin");
+            basicAuthPassword = XMLHandler.getTagValue(stepnode, "basicAuthPassword");
             failOnError ="Y".equalsIgnoreCase(XMLHandler.getTagValue(stepnode, "failOnError"));
             urlInField="Y".equalsIgnoreCase(XMLHandler.getTagValue(stepnode, "urlInField"));
             urlField       = XMLHandler.getTagValue(stepnode, "urlField");
@@ -310,6 +391,10 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
         try
         {
             url = rep.getStepAttributeString(id_step, "url"); //$NON-NLS-1$
+            httpCallType	=	   rep.getStepAttributeString (id_step, "httpCallType");
+            useBasicAuth =      rep.getStepAttributeBoolean (id_step, "useBasicAuth");
+            basicAuthLogin	=	   rep.getStepAttributeString (id_step, "basicAuthLogin");
+            basicAuthPassword	=	   rep.getStepAttributeString (id_step, "basicAuthPassword");
             failOnError =      rep.getStepAttributeBoolean (id_step, "failOnError");
             urlInField =      rep.getStepAttributeBoolean (id_step, "urlInField");
             urlField	=	   rep.getStepAttributeString (id_step, "urlField");
@@ -337,7 +422,11 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
         try
         {
             rep.saveStepAttribute(id_transformation, id_step, "url", url); //$NON-NLS-1$
-            rep.saveStepAttribute(id_transformation, id_step, "failOnError",   failOnError);
+            rep.saveStepAttribute(id_transformation, id_step, "httpCallType",   httpCallType);
+            rep.saveStepAttribute(id_transformation, id_step, "useBasicAuth",   useBasicAuth);
+            rep.saveStepAttribute(id_transformation, id_step, "basicAuthLogin",   basicAuthLogin);
+            rep.saveStepAttribute(id_transformation, id_step, "basicAuthPassword",   basicAuthPassword);
+			rep.saveStepAttribute(id_transformation, id_step, "failOnError",   failOnError);
 			rep.saveStepAttribute(id_transformation, id_step, "urlInField",   urlInField);
 			rep.saveStepAttribute(id_transformation, id_step, "urlField",   urlField);
 			
@@ -387,6 +476,17 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
         		cr = new CheckResult(CheckResultInterface.TYPE_RESULT_OK, Messages.getString("AdvancedHTTPMeta.CheckResult.UrlOk"), stepMeta);
         }
         remarks.add(cr);
+        if (useBasicAuth) {
+        	if(Const.isEmpty(basicAuthLogin)) {
+        		cr = new CheckResult(CheckResultInterface.TYPE_RESULT_ERROR, Messages.getString("AdvancedHTTPMeta.CheckResult.BasicAuthLoginMissing"), stepMeta);
+        		remarks.add(cr);
+        	}
+        	if(Const.isEmpty(basicAuthPassword)) {
+        		cr = new CheckResult(CheckResultInterface.TYPE_RESULT_ERROR, Messages.getString("AdvancedHTTPMeta.CheckResult.BasicAuthPasswordMissing"), stepMeta);
+        		remarks.add(cr);
+        	}
+        }
+        
     }
 
     public StepInterface getStep(StepMeta stepMeta, StepDataInterface stepDataInterface, int cnr, TransMeta transMeta, Trans trans)

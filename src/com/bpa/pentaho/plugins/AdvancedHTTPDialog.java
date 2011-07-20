@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -44,6 +45,11 @@ import org.pentaho.di.ui.trans.step.BaseStepDialog;
 
 public class AdvancedHTTPDialog extends BaseStepDialog implements StepDialogInterface
 {
+	
+	private Label        wlHttpCallType;
+	private CCombo       wHttpCallType;
+	private FormData     fdlHttpCallType, fdHttpCallType;
+	    
 	private Label        wlUrl;
 	private TextVar      wUrl;
 	private FormData     fdlUrl, fdUrl;
@@ -71,6 +77,18 @@ public class AdvancedHTTPDialog extends BaseStepDialog implements StepDialogInte
 	private Label        wlUrlField;
 	private ComboVar     wUrlField;
 	private FormData     fdlUrlField, fdUrlField;
+	
+	private Label        wlUseBasicAuth;
+    private Button       wUseBasicAuth;
+    private FormData     fdlUseBasicAuth, fdUseBasicAuth;
+	
+	private Label        wlBasicAuthLogin;
+	private Text         wBasicAuthLogin;
+	private FormData     fdlBasicAuthLogin, fdBasicAuthLogin;
+
+	private Label        wlBasicAuthPassword;
+	private Text         wBasicAuthPassword;
+	private FormData     fdlBasicAuthPassword, fdBasicAuthPassword;
 
 	private Button wGet;
 	private Listener lsGet;
@@ -136,13 +154,34 @@ public class AdvancedHTTPDialog extends BaseStepDialog implements StepDialogInte
 		fdStepname.right= new FormAttachment(100, 0);
 		wStepname.setLayoutData(fdStepname);
 		
+		 // HttpCallType
+        wlHttpCallType=new Label(shell, SWT.RIGHT);
+        wlHttpCallType.setText(Messages.getString("AdvancedHTTPDialog.HttpCallType.Label"));
+        props.setLook(wlHttpCallType);
+        fdlHttpCallType=new FormData();
+        fdlHttpCallType.left = new FormAttachment(0, 0);
+        fdlHttpCallType.top  = new FormAttachment(wStepname, 2*margin);
+        fdlHttpCallType.right= new FormAttachment(middle, -margin);
+        wlHttpCallType.setLayoutData(fdlHttpCallType);
+        wHttpCallType=new CCombo(shell, SWT.BORDER | SWT.READ_ONLY);
+        wHttpCallType.setEditable(true);
+        props.setLook(wHttpCallType);
+        wHttpCallType.addModifyListener(lsMod);
+        fdHttpCallType=new FormData();
+        fdHttpCallType.left = new FormAttachment(middle, margin);
+        fdHttpCallType.top  = new FormAttachment(wStepname,2*margin);
+        fdHttpCallType.right= new FormAttachment(100, 0);
+        wHttpCallType.setLayoutData(fdHttpCallType);
+        wHttpCallType.add(AdvancedHTTPMeta.HTTP_CALL_TYPE_GET);
+        wHttpCallType.add(AdvancedHTTPMeta.HTTP_CALL_TYPE_POST_FORM);
+        
 		wlUrl=new Label(shell, SWT.RIGHT);
 		wlUrl.setText(Messages.getString("AdvancedHTTPDialog.URL.Label")); //$NON-NLS-1$
  		props.setLook(wlUrl);
 		fdlUrl=new FormData();
 		fdlUrl.left = new FormAttachment(0, 0);
 		fdlUrl.right= new FormAttachment(middle, -margin);
-		fdlUrl.top  = new FormAttachment(wStepname, margin*2);
+		fdlUrl.top  = new FormAttachment(wHttpCallType, margin*2);
 		wlUrl.setLayoutData(fdlUrl);
 
 		wUrl=new TextVar(transMeta, shell, SWT.SINGLE | SWT.LEFT | SWT.BORDER);
@@ -150,7 +189,7 @@ public class AdvancedHTTPDialog extends BaseStepDialog implements StepDialogInte
 		wUrl.addModifyListener(lsMod);
 		fdUrl=new FormData();
 		fdUrl.left = new FormAttachment(middle, 0);
-		fdUrl.top  = new FormAttachment(wStepname, margin*2);
+		fdUrl.top  = new FormAttachment(wHttpCallType, margin*2);
 		fdUrl.right= new FormAttachment(100, 0);
 		wUrl.setLayoutData(fdUrl);
 		
@@ -170,6 +209,14 @@ public class AdvancedHTTPDialog extends BaseStepDialog implements StepDialogInte
         fdFailOnError.top  = new FormAttachment(wUrl, margin);
         fdFailOnError.right= new FormAttachment(100, 0);
         wFailOnError.setLayoutData(fdFailOnError);
+        wFailOnError.addSelectionListener(new SelectionAdapter() 
+        {
+            public void widgetSelected(SelectionEvent e) 
+            {
+            	input.setChanged();
+            }
+        }
+    );
         
 		// UrlInField line
         wlUrlInField=new Label(shell, SWT.RIGHT);
@@ -270,12 +317,74 @@ public class AdvancedHTTPDialog extends BaseStepDialog implements StepDialogInte
 		fdHttpReturnCodeFieldName.right= new FormAttachment(100, 0);
 		wHttpReturnCodeFieldName.setLayoutData(fdHttpReturnCodeFieldName);
 		
+		// Use basic auth line
+        wlUseBasicAuth=new Label(shell, SWT.RIGHT);
+        wlUseBasicAuth.setText(Messages.getString("AdvancedHTTPDialog.UseBasicAuth.Label"));
+        props.setLook(wlUseBasicAuth);
+        fdlUseBasicAuth=new FormData();
+        fdlUseBasicAuth.left = new FormAttachment(0, 0);
+        fdlUseBasicAuth.top  = new FormAttachment(wHttpReturnCodeFieldName, margin);
+        fdlUseBasicAuth.right= new FormAttachment(middle, -margin);
+        wlUseBasicAuth.setLayoutData(fdlUseBasicAuth);
+        wUseBasicAuth=new Button(shell, SWT.CHECK );
+        props.setLook(wUseBasicAuth);
+        fdUseBasicAuth=new FormData();
+        fdUseBasicAuth.left = new FormAttachment(middle, 0);
+        fdUseBasicAuth.top  = new FormAttachment(wHttpReturnCodeFieldName);
+        fdUseBasicAuth.right= new FormAttachment(100, 0);
+        wUseBasicAuth.setLayoutData(fdUseBasicAuth);
+        wUseBasicAuth.addSelectionListener(new SelectionAdapter() 
+        {
+            public void widgetSelected(SelectionEvent e) 
+            {
+            	input.setChanged();
+            	activeBasicAuthFields();
+            }
+        }
+    );
+        
+        // BasicAuthLogin line...
+		wlBasicAuthLogin=new Label(shell, SWT.RIGHT);
+		wlBasicAuthLogin.setText(Messages.getString("AdvancedHTTPDialog.BasicAuthLogin.Label")); //$NON-NLS-1$
+ 		props.setLook(wlBasicAuthLogin);
+		fdlBasicAuthLogin=new FormData();
+		fdlBasicAuthLogin.left = new FormAttachment(0, 0);
+		fdlBasicAuthLogin.right= new FormAttachment(middle, -margin);
+		fdlBasicAuthLogin.top  = new FormAttachment(wUseBasicAuth, margin*2);
+		wlBasicAuthLogin.setLayoutData(fdlBasicAuthLogin);
+		wBasicAuthLogin=new Text(shell, SWT.SINGLE | SWT.LEFT | SWT.BORDER);
+ 		props.setLook(wBasicAuthLogin);
+		wBasicAuthLogin.addModifyListener(lsMod);
+		fdBasicAuthLogin=new FormData();
+		fdBasicAuthLogin.left = new FormAttachment(middle, 0);
+		fdBasicAuthLogin.top  = new FormAttachment(wUseBasicAuth, margin*2);
+		fdBasicAuthLogin.right= new FormAttachment(100, 0);
+		wBasicAuthLogin.setLayoutData(fdBasicAuthLogin);
+		
+		 // BasicAuthPassword line...
+		wlBasicAuthPassword=new Label(shell, SWT.RIGHT);
+		wlBasicAuthPassword.setText(Messages.getString("AdvancedHTTPDialog.BasicAuthPassword.Label")); //$NON-NLS-1$
+ 		props.setLook(wlBasicAuthPassword);
+		fdlBasicAuthPassword=new FormData();
+		fdlBasicAuthPassword.left = new FormAttachment(0, 0);
+		fdlBasicAuthPassword.right= new FormAttachment(middle, -margin);
+		fdlBasicAuthPassword.top  = new FormAttachment(wBasicAuthLogin, margin*2);
+		wlBasicAuthPassword.setLayoutData(fdlBasicAuthPassword);
+		wBasicAuthPassword=new Text(shell, SWT.SINGLE | SWT.LEFT | SWT.BORDER);
+ 		props.setLook(wBasicAuthPassword);
+		wBasicAuthPassword.addModifyListener(lsMod);
+		fdBasicAuthPassword=new FormData();
+		fdBasicAuthPassword.left = new FormAttachment(middle, 0);
+		fdBasicAuthPassword.top  = new FormAttachment(wBasicAuthLogin, margin*2);
+		fdBasicAuthPassword.right= new FormAttachment(100, 0);
+		wBasicAuthPassword.setLayoutData(fdBasicAuthPassword);
+		
 		wlFields=new Label(shell, SWT.NONE);
 		wlFields.setText(Messages.getString("AdvancedHTTPDialog.Parameters.Label")); //$NON-NLS-1$
  		props.setLook(wlFields);
 		fdlFields=new FormData();
 		fdlFields.left = new FormAttachment(0, 0);
-		fdlFields.top  = new FormAttachment(wHttpReturnCodeFieldName, margin);
+		fdlFields.top  = new FormAttachment(wlBasicAuthPassword, margin);
 		wlFields.setLayoutData(fdlFields);
 		
 		final int FieldsRows=input.getArgumentField().length;
@@ -355,6 +464,8 @@ public class AdvancedHTTPDialog extends BaseStepDialog implements StepDialogInte
         wUrl.addSelectionListener( lsDef );
         wHttpBodyFieldName.addSelectionListener( lsDef );
         wHttpReturnCodeFieldName.addSelectionListener( lsDef );
+        wBasicAuthLogin.addSelectionListener( lsDef );
+        wBasicAuthPassword.addSelectionListener( lsDef );
 		
 		// Detect X or ALT-F4 or something that kills this window...
 		shell.addShellListener(	new ShellAdapter() { public void shellClosed(ShellEvent e) { cancel(); } } );
@@ -376,6 +487,7 @@ public class AdvancedHTTPDialog extends BaseStepDialog implements StepDialogInte
 		
 		getData();
 		activeUrlInfield();
+		activeBasicAuthFields();
 		input.setChanged(changed);
 
 		shell.open();
@@ -409,6 +521,11 @@ public class AdvancedHTTPDialog extends BaseStepDialog implements StepDialogInte
 		wlUrl.setEnabled(!wUrlInField.getSelection());
 		wUrl.setEnabled(!wUrlInField.getSelection());    
 	}
+	
+	private void activeBasicAuthFields() {
+		wBasicAuthLogin.setEnabled(wUseBasicAuth.getSelection());
+		wBasicAuthPassword.setEnabled(wUseBasicAuth.getSelection());
+	}
 	/**
 	 * Copy information from the meta-data input to the dialog fields.
 	 */ 
@@ -430,6 +547,11 @@ public class AdvancedHTTPDialog extends BaseStepDialog implements StepDialogInte
         if (input.getUrlField() !=null) wUrlField.setText(input.getUrlField());
         
         wFailOnError.setSelection(input.isFailOnError());
+        
+        wHttpCallType.setText(input.getHttpCallType());
+        wUseBasicAuth.setSelection(input.isUseBasicAuth());
+        wBasicAuthLogin.setText(input.getBasicAuthLogin());
+        wBasicAuthPassword.setText(input.getBasicAuthPassword());
         
 		if (input.getHttpBodyFieldName()!=null) wHttpBodyFieldName.setText(input.getHttpBodyFieldName());
 		if (input.getHttpReturnCodeFieldName()!=null) wHttpReturnCodeFieldName.setText(input.getHttpReturnCodeFieldName());
@@ -462,6 +584,11 @@ public class AdvancedHTTPDialog extends BaseStepDialog implements StepDialogInte
 			input.getArgumentParameter()[i]    = item.getText(2);
 		}
 
+		input.setHttpCallType(wHttpCallType.getText());
+		input.setUseBasicAuth(wUseBasicAuth.getSelection());
+		input.setBasicAuthLogin(wBasicAuthLogin.getText());
+		input.setBasicAuthPassword(wBasicAuthPassword.getText());
+		
 		input.setUrl( wUrl.getText() );
 		input.setUrlField(wUrlField.getText() );
 		input.setUrlInField(wUrlInField.getSelection() );
