@@ -39,7 +39,10 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
     private String  argumentParameter[];
 
     /** function bodyFieldName: new value name */
-    private String  httpBodyFieldName;
+    private String httpBodyFieldName;
+    
+    /** function bodyFieldName: new value name */
+    private String httpReturnCodeFieldName;
     
     private boolean urlInField;
     
@@ -100,7 +103,7 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
     }
 
     /**
-     * @return Returns the resultName.
+     * @return Returns the http body field name.
      */
     public String getHttpBodyFieldName()
     {
@@ -108,12 +111,29 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
     }
 
     /**
-     * @param resultName The resultName to set.
+     * @param httpBodyFieldName The http body field name to set.
      */
     public void setHttpBodyFieldName(String httpBodyFieldName)
     {
         this.httpBodyFieldName = httpBodyFieldName;
     }
+    
+    /**
+     * @return Returns the http return code field name.
+     */
+    public String getHttpReturnCodeFieldName()
+    {
+        return httpReturnCodeFieldName;
+    }
+
+    /**
+     * @param httpReturnCodeFieldName The http return code field name to set.
+     */
+    public void setHttpReturnCodeFieldName(String httpReturnCodeFieldName)
+    {
+        this.httpReturnCodeFieldName = httpReturnCodeFieldName;
+    }
+    
     /**
      * @return Is the url coded in a field?
      */
@@ -183,6 +203,7 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
         }
 
         httpBodyFieldName = "http_body"; //$NON-NLS-1$
+        httpReturnCodeFieldName = "http_return_code"; //$NON-NLS-1$
     }
 
     public void getFields(RowMetaInterface inputRowMeta, String name, RowMetaInterface[] info, StepMeta nextStep, VariableSpace space) throws KettleStepException    
@@ -190,6 +211,12 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
         if (!Const.isEmpty(httpBodyFieldName))
         {
             ValueMetaInterface v = new ValueMeta(httpBodyFieldName, ValueMeta.TYPE_STRING);
+            inputRowMeta.addValueMeta(v);
+        }
+        if (!Const.isEmpty(httpReturnCodeFieldName))
+        {
+            ValueMetaInterface v = new ValueMeta(httpReturnCodeFieldName, ValueMeta.TYPE_STRING);
+            //v.setLength(ValueMetaInterface.DEFAULT_INTEGER_LENGTH, 0);
             inputRowMeta.addValueMeta(v);
         }
     }
@@ -216,6 +243,10 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
         retval.append("    <http_body_field>").append(Const.CR); //$NON-NLS-1$
         retval.append("      ").append(XMLHandler.addTagValue("name", httpBodyFieldName)); //$NON-NLS-1$ //$NON-NLS-2$
         retval.append("    </http_body_field>").append(Const.CR); //$NON-NLS-1$
+
+        retval.append("    <http_return_code_field>").append(Const.CR); //$NON-NLS-1$
+        retval.append("      ").append(XMLHandler.addTagValue("name", httpReturnCodeFieldName)); //$NON-NLS-1$ //$NON-NLS-2$
+        retval.append("    </http_return_code_field>").append(Const.CR); //$NON-NLS-1$
 
         return retval.toString();
     }
@@ -244,6 +275,7 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
             }
 
             httpBodyFieldName = XMLHandler.getTagValue(stepnode, "http_body_field", "name"); // Optional, can be null //$NON-NLS-1$
+            httpReturnCodeFieldName = XMLHandler.getTagValue(stepnode, "http_return_code_field", "name"); // Optional, can be null //$NON-NLS-1$
         }
         catch (Exception e)
         {
@@ -269,6 +301,7 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
             }
 
             httpBodyFieldName = rep.getStepAttributeString(id_step, "http_body_field_name"); //$NON-NLS-1$
+            httpReturnCodeFieldName = rep.getStepAttributeString(id_step, "http_return_code_field_name"); //$NON-NLS-1$
         }
         catch (Exception e)
         {
@@ -291,6 +324,7 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
             }
 
             rep.saveStepAttribute(id_transformation, id_step, "http_body_field_name", httpBodyFieldName); //$NON-NLS-1$
+            rep.saveStepAttribute(id_transformation, id_step, "http_return_code_field_name", httpReturnCodeFieldName); //$NON-NLS-1$
         }
         catch (Exception e)
         {

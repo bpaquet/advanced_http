@@ -82,7 +82,7 @@ public class AdvancedHTTP extends BaseStep implements StepInterface
                 String body = bodyBuffer.toString();
                 if (log.isDebug()) log.logDebug(toString(), "Response body: "+body);
                 
-                return RowDataUtil.addValueData(rowData, rowMeta.size(), body);
+                return RowDataUtil.addValueData(RowDataUtil.addValueData(rowData, rowMeta.size(), body), rowMeta.size() + 1, Integer.toString(result));
             }
             finally
             {

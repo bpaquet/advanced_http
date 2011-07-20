@@ -52,6 +52,10 @@ public class AdvancedHTTPDialog extends BaseStepDialog implements StepDialogInte
 	private Text         wHttpBodyFieldName;
 	private FormData     fdlHttpBodyFieldName, fdHttpBodyFieldName;
 
+	private Label        wlHttpReturnCodeFieldName;
+	private Text         wHttpReturnCodeFieldName;
+	private FormData     fdlHttpReturnCodeFieldName, fdHttpReturnCodeFieldName;
+
 	private Label        wlFields;
 	private TableView    wFields;
 	private FormData     fdlFields, fdFields;
@@ -227,12 +231,30 @@ public class AdvancedHTTPDialog extends BaseStepDialog implements StepDialogInte
 		fdHttpBodyFieldName.right= new FormAttachment(100, 0);
 		wHttpBodyFieldName.setLayoutData(fdHttpBodyFieldName);
 
+		// HttpReturnCodeFieldName line...
+		wlHttpReturnCodeFieldName=new Label(shell, SWT.RIGHT);
+		wlHttpReturnCodeFieldName.setText(Messages.getString("AdvancedHTTPDialog.HttpReturnCodeFieldName.Label")); //$NON-NLS-1$
+ 		props.setLook(wlHttpReturnCodeFieldName);
+		fdlHttpReturnCodeFieldName=new FormData();
+		fdlHttpReturnCodeFieldName.left = new FormAttachment(0, 0);
+		fdlHttpReturnCodeFieldName.right= new FormAttachment(middle, -margin);
+		fdlHttpReturnCodeFieldName.top  = new FormAttachment(wHttpBodyFieldName, margin*2);
+		wlHttpReturnCodeFieldName.setLayoutData(fdlHttpReturnCodeFieldName);
+		wHttpReturnCodeFieldName=new Text(shell, SWT.SINGLE | SWT.LEFT | SWT.BORDER);
+ 		props.setLook(wHttpReturnCodeFieldName);
+		wHttpReturnCodeFieldName.addModifyListener(lsMod);
+		fdHttpReturnCodeFieldName=new FormData();
+		fdHttpReturnCodeFieldName.left = new FormAttachment(middle, 0);
+		fdHttpReturnCodeFieldName.top  = new FormAttachment(wHttpBodyFieldName, margin*2);
+		fdHttpReturnCodeFieldName.right= new FormAttachment(100, 0);
+		wHttpReturnCodeFieldName.setLayoutData(fdHttpReturnCodeFieldName);
+		
 		wlFields=new Label(shell, SWT.NONE);
 		wlFields.setText(Messages.getString("AdvancedHTTPDialog.Parameters.Label")); //$NON-NLS-1$
  		props.setLook(wlFields);
 		fdlFields=new FormData();
 		fdlFields.left = new FormAttachment(0, 0);
-		fdlFields.top  = new FormAttachment(wHttpBodyFieldName, margin);
+		fdlFields.top  = new FormAttachment(wHttpReturnCodeFieldName, margin);
 		wlFields.setLayoutData(fdlFields);
 		
 		final int FieldsRows=input.getArgumentField().length;
@@ -311,6 +333,7 @@ public class AdvancedHTTPDialog extends BaseStepDialog implements StepDialogInte
 		wStepname.addSelectionListener( lsDef );
         wUrl.addSelectionListener( lsDef );
         wHttpBodyFieldName.addSelectionListener( lsDef );
+        wHttpReturnCodeFieldName.addSelectionListener( lsDef );
 		
 		// Detect X or ALT-F4 or something that kills this window...
 		shell.addShellListener(	new ShellAdapter() { public void shellClosed(ShellEvent e) { cancel(); } } );
@@ -386,6 +409,7 @@ public class AdvancedHTTPDialog extends BaseStepDialog implements StepDialogInte
         if (input.getUrlField() !=null) wUrlField.setText(input.getUrlField());
         
 		if (input.getHttpBodyFieldName()!=null) wHttpBodyFieldName.setText(input.getHttpBodyFieldName());
+		if (input.getHttpReturnCodeFieldName()!=null) wHttpReturnCodeFieldName.setText(input.getHttpReturnCodeFieldName());
 
 		wFields.setRowNums();
 		wFields.optWidth(true);
@@ -419,7 +443,7 @@ public class AdvancedHTTPDialog extends BaseStepDialog implements StepDialogInte
 		input.setUrlField(wUrlField.getText() );
 		input.setUrlInField(wUrlInField.getSelection() );
 		input.setHttpBodyFieldName( wHttpBodyFieldName.getText() );
-
+		input.setHttpReturnCodeFieldName( wHttpReturnCodeFieldName.getText() );
 		stepname = wStepname.getText(); // return value
 
 		dispose();
