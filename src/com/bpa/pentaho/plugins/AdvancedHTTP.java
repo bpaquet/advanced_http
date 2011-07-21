@@ -3,11 +3,14 @@ package com.bpa.pentaho.plugins;
 import java.io.InputStream;
 
 import org.apache.commons.httpclient.Credentials;
+import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.httpclient.util.URIUtil;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.exception.KettleException;
@@ -57,7 +60,7 @@ public class AdvancedHTTP extends BaseStep implements StepInterface
 	
 	private Object[] callHttpService(RowMetaInterface rowMeta, Object[] rowData) throws KettleException
     {
-        String url = determineUrl(rowMeta, rowData);
+        String url = initUrl(rowMeta, rowData);
         try
         {
             if(log.isDetailed()) logDetailed(Messages.getString("AdvancedHTTP.Log.Connecting",url));
@@ -77,8 +80,35 @@ public class AdvancedHTTP extends BaseStep implements StepInterface
             if (!meta.isStrictSSLCheck()) {
             	SSL.disableSSLCheck();
             }
-            
-            HttpMethod method = new GetMethod(environmentSubstitute(url));
+         
+            HttpMethod method = null;
+            if (AdvancedHTTPMeta.HTTP_CALL_TYPE_GET.equals(meta.getHttpCallType())) {
+            	String suffix = getParams(rowMeta, rowData);
+            	String getUrl = url;
+            	if (getUrl.indexOf("?")<0)
+	            {
+            		getUrl += "?" + suffix;
+	            }
+	            else
+	            {
+	            	getUrl += "&" + suffix;
+	            }
+            	if(log.isDetailed()) logDetailed(Messages.getString("AdvancedHTTP.Log.GetUrl",getUrl));
+            	method = new GetMethod(getUrl);
+            }
+            else if (AdvancedHTTPMeta.HTTP_CALL_TYPE_POST_FORM.equals(meta.getHttpCallType())) {
+            	PostMethod postMethod = new PostMethod(url);
+            	if(log.isDetailed()) logDetailed(Messages.getString("AdvancedHTTP.Log.PostUrl",url));
+            	String body = getParams(rowMeta, rowData);
+            	if(log.isDetailed()) logDetailed(Messages.getString("AdvancedHTTP.Log.PostBody",body));
+            	postMethod.addRequestHeader(new Header("Content-Type", "application/x-www-form-urlencoded"));
+            	postMethod.setRequestEntity(new StringRequestEntity(body));
+            	method = postMethod;
+
+            }
+            else {
+            	throw new KettleException("Unknown http call type " + meta.getHttpCallType());
+            }
 
             // Execute request
             // 
@@ -118,24 +148,31 @@ public class AdvancedHTTP extends BaseStep implements StepInterface
         }
     }
 
-    private String determineUrl(RowMetaInterface outputRowMeta, Object[] row) throws KettleValueException, KettleException
-    {
-    	try
+	private String initUrl(RowMetaInterface outputRowMeta, Object[] row) throws KettleValueException, KettleException {
+		try
     	{
     		if(meta.isUrlInField())
   	        {
     			// get dynamic url
   	        	data.realUrl=outputRowMeta.getString(row,data.indexOfUrlField);
   	        }
-	        StringBuffer url = new StringBuffer(data.realUrl); // the base URL with variable substitution
+    		return data.realUrl;
+    	}
+		catch(Exception e)
+	    {
+	        throw new KettleException(Messages.getString("AdvancedHTTP.Log.UnableCreateUrl"), e);
+	    }
+	}
+	
+    private String getParams(RowMetaInterface outputRowMeta, Object[] row) throws KettleValueException, KettleException
+    {
+    	try
+    	{
+            StringBuffer url = new StringBuffer("");
 	        
 	        for (int i=0;i<data.argnrs.length;i++)
 	        {
-	        	if (i==0 && url.indexOf("?")<0)
-	            {
-	                url.append('?');
-	            }
-	            else
+	        	if (i!=0)
 	            {
 	                url.append('&');
 	            }
