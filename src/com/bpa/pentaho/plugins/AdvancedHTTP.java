@@ -73,6 +73,11 @@ public class AdvancedHTTP extends BaseStep implements StepInterface
             	httpclient.getState().setCredentials(authScope, credentials);
             }
             
+            // ssl force check
+            if (!meta.isStrictSSLCheck()) {
+            	SSL.disableSSLCheck();
+            }
+            
             HttpMethod method = new GetMethod(environmentSubstitute(url));
 
             // Execute request
