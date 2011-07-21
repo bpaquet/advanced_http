@@ -2,8 +2,11 @@ package com.bpa.pentaho.plugins;
 
 import java.io.InputStream;
 
+import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.UsernamePasswordCredentials;
+import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.util.URIUtil;
 import org.pentaho.di.core.Const;
@@ -62,6 +65,14 @@ public class AdvancedHTTP extends BaseStep implements StepInterface
             // Prepare HTTP get
             // 
             HttpClient httpclient = new HttpClient();
+
+            // Basic auth
+            if (meta.isUseBasicAuth()) {
+            	AuthScope authScope = new AuthScope(AuthScope.ANY_HOST, AuthScope.ANY_PORT);
+            	Credentials credentials = new UsernamePasswordCredentials(meta.getBasicAuthLogin(), meta.getBasicAuthPassword());
+            	httpclient.getState().setCredentials(authScope, credentials);
+            }
+            
             HttpMethod method = new GetMethod(environmentSubstitute(url));
 
             // Execute request
