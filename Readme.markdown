@@ -11,6 +11,7 @@ It's an advanced http connector.
 * Get and Post (x-www-form-urlencoded)
 * Basic auth
 * HTTPS, with or without stict ssl check
+* Start time and request time
 
 # How to use it
 
