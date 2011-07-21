@@ -62,6 +62,14 @@ public class AdvancedHTTPDialog extends BaseStepDialog implements StepDialogInte
 	private Text         wHttpReturnCodeFieldName;
 	private FormData     fdlHttpReturnCodeFieldName, fdHttpReturnCodeFieldName;
 
+	private Label        wlHttpStartTimeFieldName;
+	private Text         wHttpStartTimeFieldName;
+	private FormData     fdlHttpStartTimeFieldName, fdHttpStartTimeFieldName;
+
+	private Label        wlHttpRequestTimeFieldName;
+	private Text         wHttpRequestTimeFieldName;
+	private FormData     fdlHttpRequestTimeFieldName, fdHttpRequestTimeFieldName;
+	
 	private Label        wlFields;
 	private TableView    wFields;
 	private FormData     fdlFields, fdFields;
@@ -346,20 +354,56 @@ public class AdvancedHTTPDialog extends BaseStepDialog implements StepDialogInte
 		fdHttpReturnCodeFieldName.right= new FormAttachment(100, 0);
 		wHttpReturnCodeFieldName.setLayoutData(fdHttpReturnCodeFieldName);
 		
+		// HttpStartTimeFieldName line...
+		wlHttpStartTimeFieldName=new Label(shell, SWT.RIGHT);
+		wlHttpStartTimeFieldName.setText(Messages.getString("AdvancedHTTPDialog.HttpStartTimeFieldName.Label")); //$NON-NLS-1$
+ 		props.setLook(wlHttpStartTimeFieldName);
+		fdlHttpStartTimeFieldName=new FormData();
+		fdlHttpStartTimeFieldName.left = new FormAttachment(0, 0);
+		fdlHttpStartTimeFieldName.right= new FormAttachment(middle, -margin);
+		fdlHttpStartTimeFieldName.top  = new FormAttachment(wHttpReturnCodeFieldName, margin*2);
+		wlHttpStartTimeFieldName.setLayoutData(fdlHttpStartTimeFieldName);
+		wHttpStartTimeFieldName=new Text(shell, SWT.SINGLE | SWT.LEFT | SWT.BORDER);
+ 		props.setLook(wHttpStartTimeFieldName);
+		wHttpStartTimeFieldName.addModifyListener(lsMod);
+		fdHttpStartTimeFieldName=new FormData();
+		fdHttpStartTimeFieldName.left = new FormAttachment(middle, 0);
+		fdHttpStartTimeFieldName.top  = new FormAttachment(wHttpReturnCodeFieldName, margin*2);
+		fdHttpStartTimeFieldName.right= new FormAttachment(100, 0);
+		wHttpStartTimeFieldName.setLayoutData(fdHttpStartTimeFieldName);
+		
+		// HttpRequestTimeFieldName line...
+		wlHttpRequestTimeFieldName=new Label(shell, SWT.RIGHT);
+		wlHttpRequestTimeFieldName.setText(Messages.getString("AdvancedHTTPDialog.HttpRequestTimeFieldName.Label")); //$NON-NLS-1$
+ 		props.setLook(wlHttpRequestTimeFieldName);
+		fdlHttpRequestTimeFieldName=new FormData();
+		fdlHttpRequestTimeFieldName.left = new FormAttachment(0, 0);
+		fdlHttpRequestTimeFieldName.right= new FormAttachment(middle, -margin);
+		fdlHttpRequestTimeFieldName.top  = new FormAttachment(wHttpStartTimeFieldName, margin*2);
+		wlHttpRequestTimeFieldName.setLayoutData(fdlHttpRequestTimeFieldName);
+		wHttpRequestTimeFieldName=new Text(shell, SWT.SINGLE | SWT.LEFT | SWT.BORDER);
+ 		props.setLook(wHttpRequestTimeFieldName);
+		wHttpRequestTimeFieldName.addModifyListener(lsMod);
+		fdHttpRequestTimeFieldName=new FormData();
+		fdHttpRequestTimeFieldName.left = new FormAttachment(middle, 0);
+		fdHttpRequestTimeFieldName.top  = new FormAttachment(wHttpStartTimeFieldName, margin*2);
+		fdHttpRequestTimeFieldName.right= new FormAttachment(100, 0);
+		wHttpRequestTimeFieldName.setLayoutData(fdHttpRequestTimeFieldName);
+		
 		// Use basic auth line
         wlUseBasicAuth=new Label(shell, SWT.RIGHT);
         wlUseBasicAuth.setText(Messages.getString("AdvancedHTTPDialog.UseBasicAuth.Label"));
         props.setLook(wlUseBasicAuth);
         fdlUseBasicAuth=new FormData();
         fdlUseBasicAuth.left = new FormAttachment(0, 0);
-        fdlUseBasicAuth.top  = new FormAttachment(wHttpReturnCodeFieldName, margin);
+        fdlUseBasicAuth.top  = new FormAttachment(wHttpRequestTimeFieldName, margin);
         fdlUseBasicAuth.right= new FormAttachment(middle, -margin);
         wlUseBasicAuth.setLayoutData(fdlUseBasicAuth);
         wUseBasicAuth=new Button(shell, SWT.CHECK );
         props.setLook(wUseBasicAuth);
         fdUseBasicAuth=new FormData();
         fdUseBasicAuth.left = new FormAttachment(middle, 0);
-        fdUseBasicAuth.top  = new FormAttachment(wHttpReturnCodeFieldName);
+        fdUseBasicAuth.top  = new FormAttachment(wHttpRequestTimeFieldName);
         fdUseBasicAuth.right= new FormAttachment(100, 0);
         wUseBasicAuth.setLayoutData(fdUseBasicAuth);
         wUseBasicAuth.addSelectionListener(new SelectionAdapter() 
@@ -493,6 +537,9 @@ public class AdvancedHTTPDialog extends BaseStepDialog implements StepDialogInte
         wUrl.addSelectionListener( lsDef );
         wHttpBodyFieldName.addSelectionListener( lsDef );
         wHttpReturnCodeFieldName.addSelectionListener( lsDef );
+        wHttpStartTimeFieldName.addSelectionListener( lsDef );
+        wHttpRequestTimeFieldName.addSelectionListener( lsDef );
+        
         wBasicAuthLogin.addSelectionListener( lsDef );
         wBasicAuthPassword.addSelectionListener( lsDef );
 		
@@ -585,6 +632,8 @@ public class AdvancedHTTPDialog extends BaseStepDialog implements StepDialogInte
         
 		if (input.getHttpBodyFieldName()!=null) wHttpBodyFieldName.setText(input.getHttpBodyFieldName());
 		if (input.getHttpReturnCodeFieldName()!=null) wHttpReturnCodeFieldName.setText(input.getHttpReturnCodeFieldName());
+		if (input.getHttpStartTimeFieldName()!=null) wHttpStartTimeFieldName.setText(input.getHttpStartTimeFieldName());
+		if (input.getHttpRequestTimeFieldName()!=null) wHttpRequestTimeFieldName.setText(input.getHttpRequestTimeFieldName());
 
 		wFields.setRowNums();
 		wFields.optWidth(true);
@@ -626,6 +675,8 @@ public class AdvancedHTTPDialog extends BaseStepDialog implements StepDialogInte
 		input.setStrictSSLCheck( wStrictSSLCheck.getSelection() );
 		input.setHttpBodyFieldName( wHttpBodyFieldName.getText() );
 		input.setHttpReturnCodeFieldName( wHttpReturnCodeFieldName.getText() );
+		input.setHttpStartTimeFieldName( wHttpStartTimeFieldName.getText() );
+		input.setHttpRequestTimeFieldName( wHttpRequestTimeFieldName.getText() );
 		stepname = wStepname.getText(); // return value
 
 		dispose();

@@ -1,6 +1,7 @@
 package com.bpa.pentaho.plugins;
 
 import java.io.InputStream;
+import java.util.Date;
 
 import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.Header;
@@ -58,9 +59,19 @@ public class AdvancedHTTP extends BaseStep implements StepInterface
         return callHttpService(rowMeta, row);
 	}
 	
+	private Object[] makeResponse(RowMetaInterface rowMeta, Object[] rowData, String body, int code, long startTime, long requestTime) {
+		Object [] tmp = rowData;
+		tmp = RowDataUtil.addValueData(tmp, rowMeta.size(), body);
+		tmp = RowDataUtil.addValueData(tmp, rowMeta.size() + 1, new Long(code));
+		tmp = RowDataUtil.addValueData(tmp, rowMeta.size() + 2, new Date(startTime));
+		tmp = RowDataUtil.addValueData(tmp, rowMeta.size() + 3, new Long(requestTime));
+		return tmp;
+	}
+	
 	private Object[] callHttpService(RowMetaInterface rowMeta, Object[] rowData) throws KettleException
     {
         String url = initUrl(rowMeta, rowData);
+        long start = System.currentTimeMillis();
         try
         {
             if(log.isDetailed()) logDetailed(Messages.getString("AdvancedHTTP.Log.Connecting",url));
@@ -125,10 +136,12 @@ public class AdvancedHTTP extends BaseStep implements StepInterface
                 while ( (c=inputStream.read())!=-1) bodyBuffer.append((char)c);
                 inputStream.close();
                 
+                long stop = System.currentTimeMillis();
+                
                 String body = bodyBuffer.toString();
                 if (log.isDebug()) log.logDebug(toString(), "Response body: "+body);
                 
-                return RowDataUtil.addValueData(RowDataUtil.addValueData(rowData, rowMeta.size(), body), rowMeta.size() + 1, new Long(result));
+                return makeResponse(rowMeta, rowData, body, result, start, stop-start);
             }
             finally
             {
@@ -142,7 +155,7 @@ public class AdvancedHTTP extends BaseStep implements StepInterface
         		throw new KettleException(Messages.getString("AdvancedHTTP.Log.UnableGetResult",url), e);
         	}
         	else {
-        		return RowDataUtil.addValueData(RowDataUtil.addValueData(rowData, rowMeta.size(), e.getMessage()), rowMeta.size() + 1, new Long(-1));
+        		return makeResponse(rowMeta, rowData, e.getMessage(), -1, start, -1);
         	}
         }
     }

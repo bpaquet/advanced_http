@@ -32,21 +32,20 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
 	public static String HTTP_CALL_TYPE_GET = "GET";
 	public static String HTTP_CALL_TYPE_POST_FORM = "POST x-www-form-urlencoded";
 		
-    /** URL / service to be called */
     private String  url;
 
-    /** function arguments : fieldname*/
     private String  argumentField[];
 
-    /** IN / OUT / INOUT */
     private String  argumentParameter[];
 
-    /** function bodyFieldName: new value name */
     private String httpBodyFieldName;
     
-    /** function bodyFieldName: new value name */
     private String httpReturnCodeFieldName;
-    
+
+    private String httpStartTimeFieldName;
+
+    private String httpRequestTimeFieldName;
+
     private boolean failOnError;
     
     private boolean strictSSLCheck;
@@ -62,7 +61,7 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
     private String basicAuthPassword;
     
     private String httpCallType;
-
+    
     public AdvancedHTTPMeta()
     {
         super(); // allocate BaseStepMeta
@@ -149,6 +148,34 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
     }
     
     /**
+	 * @return the httpStartTimeFieldName
+	 */
+	public String getHttpStartTimeFieldName() {
+		return httpStartTimeFieldName;
+	}
+
+	/**
+	 * @param httpStartTimeFieldName the httpStartTimeFieldName to set
+	 */
+	public void setHttpStartTimeFieldName(String httpStartTimeFieldName) {
+		this.httpStartTimeFieldName = httpStartTimeFieldName;
+	}
+
+	/**
+	 * @return the httpRequestTimeFieldName
+	 */
+	public String getHttpRequestTimeFieldName() {
+		return httpRequestTimeFieldName;
+	}
+
+	/**
+	 * @param httpRequestTimeFieldName the httpRequestTimeFieldName to set
+	 */
+	public void setHttpRequestTimeFieldName(String httpRequestTimeFieldName) {
+		this.httpRequestTimeFieldName = httpRequestTimeFieldName;
+	}
+
+	/**
      * @return Returns fail on error
      */
     public boolean isFailOnError() {
@@ -304,6 +331,8 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
 
         httpBodyFieldName = "http_body"; //$NON-NLS-1$
         httpReturnCodeFieldName = "http_return_code"; //$NON-NLS-1$
+        httpStartTimeFieldName = "http_start_time"; //$NON-NLS-1$
+        httpRequestTimeFieldName = "http_request_time"; //$NON-NLS-1$
         
         failOnError = true;
         strictSSLCheck = true;
@@ -325,6 +354,16 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
             ValueMetaInterface v = new ValueMeta(httpReturnCodeFieldName, ValueMeta.TYPE_INTEGER);
             v.setLength(ValueMetaInterface.DEFAULT_INTEGER_LENGTH, 0);
             v.setPrecision(0);
+            inputRowMeta.addValueMeta(v);
+        }
+        if (!Const.isEmpty(httpStartTimeFieldName))
+        {
+            ValueMetaInterface v = new ValueMeta(httpStartTimeFieldName, ValueMeta.TYPE_DATE);
+            inputRowMeta.addValueMeta(v);
+        }
+        if (!Const.isEmpty(httpRequestTimeFieldName))
+        {
+            ValueMetaInterface v = new ValueMeta(httpRequestTimeFieldName, ValueMeta.TYPE_INTEGER);
             inputRowMeta.addValueMeta(v);
         }
     }
@@ -354,13 +393,11 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
 
         retval.append("    </lookup>").append(Const.CR); //$NON-NLS-1$
 
-        retval.append("    <http_body_field>").append(Const.CR); //$NON-NLS-1$
-        retval.append("      ").append(XMLHandler.addTagValue("name", httpBodyFieldName)); //$NON-NLS-1$ //$NON-NLS-2$
-        retval.append("    </http_body_field>").append(Const.CR); //$NON-NLS-1$
-
-        retval.append("    <http_return_code_field>").append(Const.CR); //$NON-NLS-1$
-        retval.append("      ").append(XMLHandler.addTagValue("name", httpReturnCodeFieldName)); //$NON-NLS-1$ //$NON-NLS-2$
-        retval.append("    </http_return_code_field>").append(Const.CR); //$NON-NLS-1$
+        
+        retval.append("    "+XMLHandler.addTagValue("httpBodyFieldName",  httpBodyFieldName));
+        retval.append("    "+XMLHandler.addTagValue("httpReturnCodeFieldName",  httpReturnCodeFieldName));
+        retval.append("    "+XMLHandler.addTagValue("httpStartTimeFieldName",  httpStartTimeFieldName));
+        retval.append("    "+XMLHandler.addTagValue("httpRequestTimeFieldName",  httpRequestTimeFieldName));
 
         return retval.toString();
     }
@@ -394,8 +431,10 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
                 argumentParameter[i] = XMLHandler.getTagValue(anode, "parameter"); //$NON-NLS-1$
             }
 
-            httpBodyFieldName = XMLHandler.getTagValue(stepnode, "http_body_field", "name"); // Optional, can be null //$NON-NLS-1$
-            httpReturnCodeFieldName = XMLHandler.getTagValue(stepnode, "http_return_code_field", "name"); // Optional, can be null //$NON-NLS-1$
+            httpBodyFieldName       = XMLHandler.getTagValue(stepnode, "httpBodyFieldName");
+            httpReturnCodeFieldName = XMLHandler.getTagValue(stepnode, "httpReturnCodeFieldName");
+            httpStartTimeFieldName = XMLHandler.getTagValue(stepnode, "httpStartTimeFieldName");
+            httpRequestTimeFieldName = XMLHandler.getTagValue(stepnode, "httpRequestTimeFieldName");
         }
         catch (Exception e)
         {
@@ -426,8 +465,10 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
                 argumentParameter[i] = rep.getStepAttributeString(id_step, i, "arg_parameter"); //$NON-NLS-1$
             }
 
-            httpBodyFieldName = rep.getStepAttributeString(id_step, "http_body_field_name"); //$NON-NLS-1$
-            httpReturnCodeFieldName = rep.getStepAttributeString(id_step, "http_return_code_field_name"); //$NON-NLS-1$
+            httpBodyFieldName = rep.getStepAttributeString(id_step, "httpBodyFieldName"); //$NON-NLS-1$
+            httpReturnCodeFieldName = rep.getStepAttributeString(id_step, "httpReturnCodeFieldName"); //$NON-NLS-1$
+            httpStartTimeFieldName = rep.getStepAttributeString(id_step, "httpStartTimeFieldName"); //$NON-NLS-1$
+            httpRequestTimeFieldName = rep.getStepAttributeString(id_step, "httpStartTimeFieldName"); //$NON-NLS-1$
         }
         catch (Exception e)
         {
@@ -455,8 +496,10 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
                 rep.saveStepAttribute(id_transformation, id_step, i, "arg_parameter", argumentParameter[i]); //$NON-NLS-1$
             }
 
-            rep.saveStepAttribute(id_transformation, id_step, "http_body_field_name", httpBodyFieldName); //$NON-NLS-1$
-            rep.saveStepAttribute(id_transformation, id_step, "http_return_code_field_name", httpReturnCodeFieldName); //$NON-NLS-1$
+            rep.saveStepAttribute(id_transformation, id_step, "httpBodyFieldName", httpBodyFieldName); //$NON-NLS-1$
+            rep.saveStepAttribute(id_transformation, id_step, "httpReturnCodeFieldName", httpReturnCodeFieldName); //$NON-NLS-1$
+            rep.saveStepAttribute(id_transformation, id_step, "httpStartTimeFieldName", httpStartTimeFieldName); //$NON-NLS-1$
+            rep.saveStepAttribute(id_transformation, id_step, "httpRequestTimeFieldName", httpRequestTimeFieldName); //$NON-NLS-1$
         }
         catch (Exception e)
         {
