@@ -104,7 +104,6 @@ public class AdvancedHTTP extends BaseStep implements StepInterface
             	postMethod.addRequestHeader(new Header("Content-Type", "application/x-www-form-urlencoded"));
             	postMethod.setRequestEntity(new StringRequestEntity(body));
             	method = postMethod;
-
             }
             else {
             	throw new KettleException("Unknown http call type " + meta.getHttpCallType());
