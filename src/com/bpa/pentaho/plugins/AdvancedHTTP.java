@@ -96,14 +96,16 @@ public class AdvancedHTTP extends BaseStep implements StepInterface
             if (AdvancedHTTPMeta.HTTP_CALL_TYPE_GET.equals(meta.getHttpCallType())) {
             	String suffix = getParams(rowMeta, rowData);
             	String getUrl = url;
-            	if (getUrl.indexOf("?")<0)
-	            {
-            		getUrl += "?" + suffix;
-	            }
-	            else
-	            {
-	            	getUrl += "&" + suffix;
-	            }
+            	if (suffix.length() > 0) {
+            		if (getUrl.indexOf("?")<0)
+            		{
+            			getUrl += "?" + suffix;
+            		}
+            		else
+            		{
+            			getUrl += "&" + suffix;
+            		}
+            	}
             	if(log.isDetailed()) logDetailed(Messages.getString("AdvancedHTTP.Log.GetUrl",getUrl));
             	method = new GetMethod(getUrl);
             }
