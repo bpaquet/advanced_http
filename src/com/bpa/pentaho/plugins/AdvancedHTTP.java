@@ -83,7 +83,7 @@ public class AdvancedHTTP extends BaseStep implements StepInterface
             // Basic auth
             if (meta.isUseBasicAuth()) {
             	AuthScope authScope = new AuthScope(AuthScope.ANY_HOST, AuthScope.ANY_PORT);
-            	Credentials credentials = new UsernamePasswordCredentials(meta.getBasicAuthLogin(), meta.getBasicAuthPassword());
+            	Credentials credentials = new UsernamePasswordCredentials(environmentSubstitute(meta.getBasicAuthLogin()), environmentSubstitute(meta.getBasicAuthPassword()));
             	httpclient.getState().setCredentials(authScope, credentials);
             }
             
