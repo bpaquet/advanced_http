@@ -86,6 +86,10 @@ public class AdvancedHTTPDialog extends BaseStepDialog implements StepDialogInte
     private Button       wStrictSSLCheck;
     private FormData     fdlStrictSSLCheck, fdStrictSSLCheck;
 	
+    private Label        wlOnlySSLv3;
+    private Button       wOnlySSLv3;
+    private FormData     fdlOnlySSLv3, fdOnlySSLv3;
+	
 	private Label        wlUrlField;
 	private ComboVar     wUrlField;
 	private FormData     fdlUrlField, fdUrlField;
@@ -254,21 +258,46 @@ public class AdvancedHTTPDialog extends BaseStepDialog implements StepDialogInte
             }
         }
     );
-        
+    
+    	// Stric ssl check line
+        wlOnlySSLv3=new Label(shell, SWT.RIGHT);
+        wlOnlySSLv3.setText(Messages.getString("AdvancedHTTPDialog.OnlySSLv3.Label"));
+        props.setLook(wlOnlySSLv3);
+        fdlOnlySSLv3=new FormData();
+        fdlOnlySSLv3.left = new FormAttachment(0, 0);
+        fdlOnlySSLv3.top  = new FormAttachment(wlStrictSSLCheck, margin);
+        fdlOnlySSLv3.right= new FormAttachment(middle, -margin);
+        wlOnlySSLv3.setLayoutData(fdlOnlySSLv3);
+        wOnlySSLv3=new Button(shell, SWT.CHECK );
+        props.setLook(wOnlySSLv3);
+        fdOnlySSLv3=new FormData();
+        fdOnlySSLv3.left = new FormAttachment(middle, 0);
+        fdOnlySSLv3.top  = new FormAttachment(wlStrictSSLCheck, margin);
+        fdOnlySSLv3.right= new FormAttachment(100, 0);
+        wOnlySSLv3.setLayoutData(fdOnlySSLv3);
+        wOnlySSLv3.addSelectionListener(new SelectionAdapter() 
+        {
+            public void widgetSelected(SelectionEvent e) 
+            {
+            	input.setChanged();
+            }
+        }
+    );
+    
 		// UrlInField line
         wlUrlInField=new Label(shell, SWT.RIGHT);
         wlUrlInField.setText(Messages.getString("AdvancedHTTPDialog.UrlInField.Label"));
         props.setLook(wlUrlInField);
         fdlUrlInField=new FormData();
         fdlUrlInField.left = new FormAttachment(0, 0);
-        fdlUrlInField.top  = new FormAttachment(wStrictSSLCheck, margin);
+        fdlUrlInField.top  = new FormAttachment(wlOnlySSLv3, margin);
         fdlUrlInField.right= new FormAttachment(middle, -margin);
         wlUrlInField.setLayoutData(fdlUrlInField);
         wUrlInField=new Button(shell, SWT.CHECK );
         props.setLook(wUrlInField);
         fdUrlInField=new FormData();
         fdUrlInField.left = new FormAttachment(middle, 0);
-        fdUrlInField.top  = new FormAttachment(wStrictSSLCheck, margin);
+        fdUrlInField.top  = new FormAttachment(wlOnlySSLv3, margin);
         fdUrlInField.right= new FormAttachment(100, 0);
         wUrlInField.setLayoutData(fdUrlInField);
         wUrlInField.addSelectionListener(new SelectionAdapter() 
@@ -624,6 +653,7 @@ public class AdvancedHTTPDialog extends BaseStepDialog implements StepDialogInte
         
         wFailOnError.setSelection(input.isFailOnError());
         wStrictSSLCheck.setSelection(input.isStrictSSLCheck());
+        wOnlySSLv3.setSelection(input.isOnlySSLv3());
         
         wHttpCallType.setText(input.getHttpCallType());
         wUseBasicAuth.setSelection(input.isUseBasicAuth());
@@ -673,6 +703,7 @@ public class AdvancedHTTPDialog extends BaseStepDialog implements StepDialogInte
 		input.setUrlInField(wUrlInField.getSelection() );
 		input.setFailOnError( wFailOnError.getSelection() );
 		input.setStrictSSLCheck( wStrictSSLCheck.getSelection() );
+		input.setOnlySSLv3( wOnlySSLv3.getSelection() );
 		input.setHttpBodyFieldName( wHttpBodyFieldName.getText() );
 		input.setHttpReturnCodeFieldName( wHttpReturnCodeFieldName.getText() );
 		input.setHttpStartTimeFieldName( wHttpStartTimeFieldName.getText() );

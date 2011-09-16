@@ -50,6 +50,8 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
     
     private boolean strictSSLCheck;
     
+    private boolean onlySSLv3;
+    
     private boolean urlInField;
     
     private String urlField;
@@ -204,6 +206,20 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
 	}
 
 	/**
+	 * @return the onlySSLv3
+	 */
+	public boolean isOnlySSLv3() {
+		return onlySSLv3;
+	}
+
+	/**
+	 * @param onlySSLv3 the onlySSLv3 to set
+	 */
+	public void setOnlySSLv3(boolean onlySSLv3) {
+		this.onlySSLv3 = onlySSLv3;
+	}
+
+	/**
      * @return Is the url coded in a field?
      */
 	public boolean isUrlInField() {
@@ -336,6 +352,7 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
         
         failOnError = true;
         strictSSLCheck = true;
+        onlySSLv3 = false;
         
         useBasicAuth = false;
         
@@ -380,6 +397,7 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
         retval.append("    "+XMLHandler.addTagValue("urlInField",  urlInField));
         retval.append("    "+XMLHandler.addTagValue("failOnError",  failOnError));
         retval.append("    "+XMLHandler.addTagValue("strictSSLCheck",  strictSSLCheck));
+        retval.append("    "+XMLHandler.addTagValue("onlySSLv3",  onlySSLv3));
         retval.append("    "+XMLHandler.addTagValue("urlField",  urlField));
         retval.append("    <lookup>").append(Const.CR); //$NON-NLS-1$
 
@@ -415,6 +433,7 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
             basicAuthPassword = XMLHandler.getTagValue(stepnode, "basicAuthPassword");
             failOnError ="Y".equalsIgnoreCase(XMLHandler.getTagValue(stepnode, "failOnError"));
             strictSSLCheck ="Y".equalsIgnoreCase(XMLHandler.getTagValue(stepnode, "strictSSLCheck"));
+            onlySSLv3 ="Y".equalsIgnoreCase(XMLHandler.getTagValue(stepnode, "onlySSLv3"));
             urlInField="Y".equalsIgnoreCase(XMLHandler.getTagValue(stepnode, "urlInField"));
             urlField       = XMLHandler.getTagValue(stepnode, "urlField");
 			
@@ -453,6 +472,7 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
             basicAuthPassword	=	   rep.getStepAttributeString (id_step, "basicAuthPassword");
             failOnError =      rep.getStepAttributeBoolean (id_step, "failOnError");
             strictSSLCheck =      rep.getStepAttributeBoolean (id_step, "strictSSLCheck");
+            onlySSLv3 =      rep.getStepAttributeBoolean (id_step, "onlySSLv3");
             urlInField =      rep.getStepAttributeBoolean (id_step, "urlInField");
             urlField	=	   rep.getStepAttributeString (id_step, "urlField");
 			
@@ -487,6 +507,7 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
             rep.saveStepAttribute(id_transformation, id_step, "basicAuthPassword",   basicAuthPassword);
 			rep.saveStepAttribute(id_transformation, id_step, "failOnError",   failOnError);
 			rep.saveStepAttribute(id_transformation, id_step, "strictSSLCheck",   strictSSLCheck);
+			rep.saveStepAttribute(id_transformation, id_step, "onlySSLv3",   onlySSLv3);
 			rep.saveStepAttribute(id_transformation, id_step, "urlInField",   urlInField);
 			rep.saveStepAttribute(id_transformation, id_step, "urlField",   urlField);
 			

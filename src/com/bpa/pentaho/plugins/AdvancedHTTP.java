@@ -12,6 +12,9 @@ import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
+import org.apache.commons.httpclient.protocol.Protocol;
+import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
+import org.apache.commons.httpclient.protocol.SSLProtocolSocketFactory;
 import org.apache.commons.httpclient.util.URIUtil;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.exception.KettleException;
@@ -75,6 +78,9 @@ public class AdvancedHTTP extends BaseStep implements StepInterface
         try
         {
             if(log.isDetailed()) logDetailed(Messages.getString("AdvancedHTTP.Log.Connecting",url));
+            
+            Protocol protocol = new Protocol("https", meta.isOnlySSLv3() ? new SSLV3ProctocolSocketFactory() : new SSLProtocolSocketFactory(), 443); 
+            Protocol.registerProtocol("https", protocol); 
             
             // Prepare HTTP get
             // 
