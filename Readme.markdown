@@ -12,6 +12,7 @@ It's an advanced http connector.
 * Basic auth
 * HTTPS, with or without stict ssl check
 * Start time and request time
+* Specify HTTP and connection timeouts
 
 # How to use it
 
