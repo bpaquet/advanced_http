@@ -12,6 +12,8 @@ import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
+import org.apache.commons.httpclient.params.HttpConnectionParams;
+import org.apache.commons.httpclient.params.HttpParams;
 import org.apache.commons.httpclient.protocol.Protocol;
 import org.apache.commons.httpclient.protocol.ProtocolSocketFactory;
 import org.apache.commons.httpclient.protocol.SSLProtocolSocketFactory;
@@ -85,7 +87,13 @@ public class AdvancedHTTP extends BaseStep implements StepInterface
             // Prepare HTTP get
             // 
             HttpClient httpclient = new HttpClient();
-
+            if (meta.getHttpConnectionTimeout() != -1) {
+            	httpclient.getParams().setParameter(HttpConnectionParams.CONNECTION_TIMEOUT, meta.getHttpConnectionTimeout());
+            }
+            if (meta.getHttpTimeout() != -1) {
+            	httpclient.getParams().setParameter(HttpConnectionParams.SO_TIMEOUT, meta.getHttpTimeout());
+            }
+            
             // Basic auth
             if (meta.isUseBasicAuth()) {
             	AuthScope authScope = new AuthScope(AuthScope.ANY_HOST, AuthScope.ANY_PORT);

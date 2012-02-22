@@ -45,6 +45,10 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
     private String httpStartTimeFieldName;
 
     private String httpRequestTimeFieldName;
+    
+    private int httpConnectionTimeout;
+    
+    private int httpTimeout;
 
     private boolean failOnError;
     
@@ -302,6 +306,34 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
 	public void setHttpCallType(String httpCallType) {
 		this.httpCallType = httpCallType;
 	}
+	
+	/**
+	 * @return the httpConnectionTimeout
+	 */
+	public int getHttpConnectionTimeout() {
+		return httpConnectionTimeout;
+	}
+
+	/**
+	 * @param httpConnectionTimeout the httpConnectionTimeout to set
+	 */
+	public void setHttpConnectionTimeout(int httpConnectionTimeout) {
+		this.httpConnectionTimeout = httpConnectionTimeout;
+	}
+
+	/**
+	 * @return the httpTimeout
+	 */
+	public int getHttpTimeout() {
+		return httpTimeout;
+	}
+
+	/**
+	 * @param httpTimeout the httpTimeout to set
+	 */
+	public void setHttpTimeout(int httpTimeout) {
+		this.httpTimeout = httpTimeout;
+	}
 
 	public void loadXML(Node stepnode, List<DatabaseMeta> databases, Map<String, Counter> counters) throws KettleXMLException
     {
@@ -355,6 +387,9 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
         onlySSLv3 = false;
         
         useBasicAuth = false;
+        
+        httpConnectionTimeout = -1;
+        httpTimeout = -1;
         
         httpCallType = HTTP_CALL_TYPE_GET;
     }
@@ -416,6 +451,8 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
         retval.append("    "+XMLHandler.addTagValue("httpReturnCodeFieldName",  httpReturnCodeFieldName));
         retval.append("    "+XMLHandler.addTagValue("httpStartTimeFieldName",  httpStartTimeFieldName));
         retval.append("    "+XMLHandler.addTagValue("httpRequestTimeFieldName",  httpRequestTimeFieldName));
+        retval.append("    "+XMLHandler.addTagValue("httpTimeout",  httpTimeout));
+        retval.append("    "+XMLHandler.addTagValue("httpConnectionTimeout",  httpConnectionTimeout));
 
         return retval.toString();
     }
@@ -425,6 +462,7 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
         try
         {
             int nrargs;
+            String buffer;
 
             url = XMLHandler.getTagValue(stepnode, "url"); //$NON-NLS-1$
             httpCallType = XMLHandler.getTagValue(stepnode, "httpCallType");
@@ -454,6 +492,14 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
             httpReturnCodeFieldName = XMLHandler.getTagValue(stepnode, "httpReturnCodeFieldName");
             httpStartTimeFieldName = XMLHandler.getTagValue(stepnode, "httpStartTimeFieldName");
             httpRequestTimeFieldName = XMLHandler.getTagValue(stepnode, "httpRequestTimeFieldName");
+            buffer = XMLHandler.getTagValue(stepnode, "httpConnectionTimeout");
+            if (buffer != null) {
+            	httpConnectionTimeout = Integer.parseInt(buffer);
+            }
+            buffer = XMLHandler.getTagValue(stepnode, "httpTimeout");
+            if (buffer != null) {
+            	httpTimeout = Integer.parseInt(buffer);
+            }
         }
         catch (Exception e)
         {
@@ -465,6 +511,8 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
     {
         try
         {
+        	String buffer;
+        	
             url = rep.getStepAttributeString(id_step, "url"); //$NON-NLS-1$
             httpCallType	=	   rep.getStepAttributeString (id_step, "httpCallType");
             useBasicAuth =      rep.getStepAttributeBoolean (id_step, "useBasicAuth");
@@ -489,6 +537,14 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
             httpReturnCodeFieldName = rep.getStepAttributeString(id_step, "httpReturnCodeFieldName"); //$NON-NLS-1$
             httpStartTimeFieldName = rep.getStepAttributeString(id_step, "httpStartTimeFieldName"); //$NON-NLS-1$
             httpRequestTimeFieldName = rep.getStepAttributeString(id_step, "httpStartTimeFieldName"); //$NON-NLS-1$
+            buffer = rep.getStepAttributeString(id_step, "httpConnectionTimeout"); //$NON-NLS-1$
+            if (buffer != null) {
+            	httpConnectionTimeout = Integer.parseInt(buffer);
+            }
+            buffer = rep.getStepAttributeString(id_step, "httpTimeout"); //$NON-NLS-1$
+            if (buffer != null) {
+            	httpTimeout = Integer.parseInt(buffer);
+            }
         }
         catch (Exception e)
         {
@@ -521,6 +577,8 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
             rep.saveStepAttribute(id_transformation, id_step, "httpReturnCodeFieldName", httpReturnCodeFieldName); //$NON-NLS-1$
             rep.saveStepAttribute(id_transformation, id_step, "httpStartTimeFieldName", httpStartTimeFieldName); //$NON-NLS-1$
             rep.saveStepAttribute(id_transformation, id_step, "httpRequestTimeFieldName", httpRequestTimeFieldName); //$NON-NLS-1$
+            rep.saveStepAttribute(id_transformation, id_step, "httpConnectionTimeout", httpConnectionTimeout); //$NON-NLS-1$
+            rep.saveStepAttribute(id_transformation, id_step, "httpTimeout", httpTimeout); //$NON-NLS-1$
         }
         catch (Exception e)
         {

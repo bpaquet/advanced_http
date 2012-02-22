@@ -105,6 +105,14 @@ public class AdvancedHTTPDialog extends BaseStepDialog implements StepDialogInte
 	private Label        wlBasicAuthPassword;
 	private Text         wBasicAuthPassword;
 	private FormData     fdlBasicAuthPassword, fdBasicAuthPassword;
+	
+	private Label        wlHttpConnectionTimeout;
+	private Text         wHttpConnectionTimeout;
+	private FormData     fdlHttpConnectionTimeout, fdHttpConnectionTimeout;
+
+	private Label        wlHttpTimeout;
+	private Text         wHttpTimeout;
+	private FormData     fdlHttpTimeout, fdHttpTimeout;
 
 	private Button wGet;
 	private Listener lsGet;
@@ -481,12 +489,48 @@ public class AdvancedHTTPDialog extends BaseStepDialog implements StepDialogInte
 		fdBasicAuthPassword.right= new FormAttachment(100, 0);
 		wBasicAuthPassword.setLayoutData(fdBasicAuthPassword);
 		
+		// HttpConnectionTimeout line...
+		wlHttpConnectionTimeout=new Label(shell, SWT.RIGHT);
+		wlHttpConnectionTimeout.setText(Messages.getString("AdvancedHTTPDialog.HttpConnectionTimeout.Label")); //$NON-NLS-1$
+ 		props.setLook(wlHttpConnectionTimeout);
+		fdlHttpConnectionTimeout=new FormData();
+		fdlHttpConnectionTimeout.left = new FormAttachment(0, 0);
+		fdlHttpConnectionTimeout.right= new FormAttachment(middle, -margin);
+		fdlHttpConnectionTimeout.top  = new FormAttachment(wBasicAuthPassword, margin*2);
+		wlHttpConnectionTimeout.setLayoutData(fdlHttpConnectionTimeout);
+		wHttpConnectionTimeout=new Text(shell, SWT.SINGLE | SWT.LEFT | SWT.BORDER);
+ 		props.setLook(wHttpConnectionTimeout);
+		wHttpConnectionTimeout.addModifyListener(lsMod);
+		fdHttpConnectionTimeout=new FormData();
+		fdHttpConnectionTimeout.left = new FormAttachment(middle, 0);
+		fdHttpConnectionTimeout.top  = new FormAttachment(wBasicAuthPassword, margin*2);
+		fdHttpConnectionTimeout.right= new FormAttachment(100, 0);
+		wHttpConnectionTimeout.setLayoutData(fdHttpConnectionTimeout);
+		
+		// HttpTimeout line...
+		wlHttpTimeout=new Label(shell, SWT.RIGHT);
+		wlHttpTimeout.setText(Messages.getString("AdvancedHTTPDialog.HttpTimeout.Label")); //$NON-NLS-1$
+ 		props.setLook(wlHttpTimeout);
+		fdlHttpTimeout=new FormData();
+		fdlHttpTimeout.left = new FormAttachment(0, 0);
+		fdlHttpTimeout.right= new FormAttachment(middle, -margin);
+		fdlHttpTimeout.top  = new FormAttachment(wHttpConnectionTimeout, margin*2);
+		wlHttpTimeout.setLayoutData(fdlHttpTimeout);
+		wHttpTimeout=new Text(shell, SWT.SINGLE | SWT.LEFT | SWT.BORDER);
+ 		props.setLook(wHttpTimeout);
+		wHttpTimeout.addModifyListener(lsMod);
+		fdHttpTimeout=new FormData();
+		fdHttpTimeout.left = new FormAttachment(middle, 0);
+		fdHttpTimeout.top  = new FormAttachment(wHttpConnectionTimeout, margin*2);
+		fdHttpTimeout.right= new FormAttachment(100, 0);
+		wHttpTimeout.setLayoutData(fdHttpTimeout);
+		
 		wlFields=new Label(shell, SWT.NONE);
 		wlFields.setText(Messages.getString("AdvancedHTTPDialog.Parameters.Label")); //$NON-NLS-1$
  		props.setLook(wlFields);
 		fdlFields=new FormData();
 		fdlFields.left = new FormAttachment(0, 0);
-		fdlFields.top  = new FormAttachment(wlBasicAuthPassword, margin);
+		fdlFields.top  = new FormAttachment(wlHttpTimeout, margin);
 		wlFields.setLayoutData(fdlFields);
 		
 		final int FieldsRows=input.getArgumentField().length;
@@ -571,6 +615,9 @@ public class AdvancedHTTPDialog extends BaseStepDialog implements StepDialogInte
         
         wBasicAuthLogin.addSelectionListener( lsDef );
         wBasicAuthPassword.addSelectionListener( lsDef );
+        
+        wHttpConnectionTimeout.addSelectionListener( lsDef );
+        wHttpTimeout.addSelectionListener( lsDef );
 		
 		// Detect X or ALT-F4 or something that kills this window...
 		shell.addShellListener(	new ShellAdapter() { public void shellClosed(ShellEvent e) { cancel(); } } );
@@ -664,7 +711,9 @@ public class AdvancedHTTPDialog extends BaseStepDialog implements StepDialogInte
 		if (input.getHttpReturnCodeFieldName()!=null) wHttpReturnCodeFieldName.setText(input.getHttpReturnCodeFieldName());
 		if (input.getHttpStartTimeFieldName()!=null) wHttpStartTimeFieldName.setText(input.getHttpStartTimeFieldName());
 		if (input.getHttpRequestTimeFieldName()!=null) wHttpRequestTimeFieldName.setText(input.getHttpRequestTimeFieldName());
-
+		if (input.getHttpConnectionTimeout() != -1) wHttpConnectionTimeout.setText(Long.toString(input.getHttpConnectionTimeout()));
+		if (input.getHttpTimeout() != -1) wHttpTimeout.setText(Long.toString(input.getHttpTimeout()));
+		
 		wFields.setRowNums();
 		wFields.optWidth(true);
 		wStepname.selectAll();
@@ -708,6 +757,10 @@ public class AdvancedHTTPDialog extends BaseStepDialog implements StepDialogInte
 		input.setHttpReturnCodeFieldName( wHttpReturnCodeFieldName.getText() );
 		input.setHttpStartTimeFieldName( wHttpStartTimeFieldName.getText() );
 		input.setHttpRequestTimeFieldName( wHttpRequestTimeFieldName.getText() );
+		
+		input.setHttpConnectionTimeout(wHttpConnectionTimeout.getText().length() > 0 ? Integer.parseInt(wHttpConnectionTimeout.getText()) : -1);
+		input.setHttpTimeout(wHttpTimeout.getText().length() > 0 ? Integer.parseInt(wHttpTimeout.getText()) : -1);
+		
 		stepname = wStepname.getText(); // return value
 
 		dispose();
