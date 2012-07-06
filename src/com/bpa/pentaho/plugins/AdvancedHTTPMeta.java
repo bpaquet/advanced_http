@@ -16,6 +16,7 @@ import org.pentaho.di.core.row.ValueMeta;
 import org.pentaho.di.core.row.ValueMetaInterface;
 import org.pentaho.di.core.variables.VariableSpace;
 import org.pentaho.di.core.xml.XMLHandler;
+import org.pentaho.di.repository.ObjectId;
 import org.pentaho.di.repository.Repository;
 import org.pentaho.di.shared.SharedObjectInterface;
 import org.pentaho.di.trans.Trans;
@@ -507,7 +508,7 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
         }
     }
 
-    public void readRep(Repository rep, long id_step, List<DatabaseMeta> databases, Map<String, Counter> counters) throws KettleException
+    public void readRep(Repository rep, ObjectId id_step, List<DatabaseMeta> databases, Map<String, Counter> counters) throws KettleException
     {
         try
         {
@@ -552,7 +553,7 @@ public class AdvancedHTTPMeta extends BaseStepMeta implements StepMetaInterface
         }
     }
 
-    public void saveRep(Repository rep, long id_transformation, long id_step) throws KettleException
+    public void saveRep(Repository rep, ObjectId id_transformation, ObjectId id_step) throws KettleException
     {
         try
         {

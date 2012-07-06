@@ -578,7 +578,7 @@ public class AdvancedHTTPDialog extends BaseStepDialog implements StepDialogInte
                     }
                     catch(KettleException e)
                     {
-                    	log.logError(toString(), Messages.getString("System.Dialog.GetFieldsFailed.Message"));
+                    	logError(toString(), Messages.getString("System.Dialog.GetFieldsFailed.Message"));
                     }
                 }
             }
@@ -684,7 +684,7 @@ public class AdvancedHTTPDialog extends BaseStepDialog implements StepDialogInte
 	public void getData()
 	{
 		int i;
-		log.logDebug(toString(), Messages.getString("AdvancedHTTPDialog.Log.GettingKeyInfo")); //$NON-NLS-1$
+		logDebug(toString(), Messages.getString("AdvancedHTTPDialog.Log.GettingKeyInfo")); //$NON-NLS-1$
 		
 		if (input.getArgumentField()!=null)
 		for (i=0;i<input.getArgumentField().length;i++)
@@ -734,7 +734,7 @@ public class AdvancedHTTPDialog extends BaseStepDialog implements StepDialogInte
 
 		input.allocate(nrargs);
 
-		log.logDebug(toString(), Messages.getString("AdvancedHTTPDialog.Log.FoundArguments",String.valueOf(nrargs))); //$NON-NLS-1$ //$NON-NLS-2$
+		logDebug(toString(), Messages.getString("AdvancedHTTPDialog.Log.FoundArguments",String.valueOf(nrargs))); //$NON-NLS-1$ //$NON-NLS-2$
 		for (int i=0;i<nrargs;i++)
 		{
 			TableItem item = wFields.getNonEmpty(i);

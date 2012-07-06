@@ -15,7 +15,7 @@
 		</fileset>
 		<filelist>
 			<file name="${pdi_home}/libswt/osx/swt.jar" />
-			<file name="${pdi_home}/libext/commons/commons-httpclient-3.0.1.jar" />
+			<file name="${pdi_home}/libext/commons/commons-httpclient-3.1.jar" />
 		</filelist>
 	</path>
 
