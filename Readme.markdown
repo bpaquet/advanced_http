@@ -10,7 +10,7 @@ It's an advanced http connector.
 * FailOnError : failed http calls can be handled
 * Get and Post (x-www-form-urlencoded)
 * Basic auth
-* HTTPS, with or without stict ssl check
+* HTTPS, with or without strict ssl check
 * Start time and request time
 * Specify HTTP and connection timeouts
 
